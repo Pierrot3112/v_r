@@ -1,0 +1,1 @@
+export const BASE_API_URL = "https://api-v1-cec7.onrender.com";
