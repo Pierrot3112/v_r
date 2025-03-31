@@ -2,14 +2,22 @@ import { Stack } from 'expo-router';
 import { StatusBar } from 'expo-status-bar';
 import { useFrameworkReady } from '@/hooks/useFrameworkReady';
 import { PaperProvider, MD3LightTheme } from 'react-native-paper';
-import { AuthProvider } from './context/AuthContext'; 
+import { QueryClientProvider } from '@tanstack/react-query'; 
+import { AuthProvider } from './lib/context/AuthContext';
+import { COLORS } from './lib/constants';
+import { queryClient } from './lib/config/QueryClientConfig'; 
 
 const theme = {
   ...MD3LightTheme,
   colors: {
     ...MD3LightTheme.colors,
-    primary: '#6750A4',
-    secondary: '#625B71',
+    primary: COLORS.primary,
+    secondary: COLORS.secondary,
+    tertiary: COLORS.tertiary,
+    background: COLORS.bgBlue,
+    error: COLORS.red,
+    onSurface: COLORS.black,
+    onPrimary: COLORS.black,
   },
 };
 
@@ -18,14 +26,23 @@ export default function RootLayout() {
 
   return (
     <PaperProvider theme={theme}>
-      <AuthProvider> {/* Enveloppez toute l'application avec AuthProvider */}
-        <Stack screenOptions={{ headerShown: false }}>
-          <Stack.Screen name="(auth)" options={{ headerShown: false }} />
-          <Stack.Screen name="(tabs)" options={{ headerShown: false }} />
-          <Stack.Screen name="index" options={{ headerShown: false }} />
-        </Stack>
-        <StatusBar style="auto" />
-      </AuthProvider>
+      <QueryClientProvider client={queryClient}>
+        <AuthProvider>
+          <Stack 
+            screenOptions={{ 
+              headerShown: false,
+              contentStyle: {
+                backgroundColor: theme.colors.background,
+              } 
+            }}
+          >
+            <Stack.Screen name="(auth)" options={{ headerShown: false }} />
+            <Stack.Screen name="(tabs)" options={{ headerShown: false }} />
+            <Stack.Screen name="index" options={{ headerShown: false }} />
+          </Stack>
+          <StatusBar style="auto" />
+        </AuthProvider>
+      </QueryClientProvider>
     </PaperProvider>
   );
 }

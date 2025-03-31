@@ -1,0 +1,50 @@
+{
+    "conditions": [
+      {
+        "id": 1,
+        "titre": "Objet",
+        "description": "Les présentes Conditions Générales d'Utilisation (CGU) définissent les règles d'utilisation de l'application de voie rapide permettant aux utilisateurs de trouver le chemin le plus court ou le plus rapide pour leurs déplacements."
+      },
+      {
+        "id": 2,
+        "titre": "Acceptation des CGU",
+        "description": "L'accès et l'utilisation de l'application impliquent l'acceptation pleine et entière des présentes CGU. Si l'utilisateur n'accepte pas ces conditions, il ne doit pas utiliser le service."
+      },
+      {
+        "id": 3,
+        "titre": "Accès au Service",
+        "description": "Le service est accessible via une application mobile ou un site web. L'utilisateur est responsable de la compatibilité de son équipement avec l'application."
+      },
+      {
+        "id": 4,
+        "titre": "Fonctionnalités",
+        "description": "L'application propose :\n- Le calcul du chemin le plus court ou le plus rapide en fonction des paramètres de l'utilisateur.\n- La mise à jour en temps réel du trafic si disponible.\n- La suggestion d'itinéraires alternatifs en cas d'obstacles ou de perturbations."
+      },
+      {
+        "id": 5,
+        "titre": "Responsabilité de l'Utilisateur",
+        "description": "L'utilisateur s'engage à :\n- Fournir des informations exactes lorsqu'il utilise le service.\n- Respecter le Code de la route et les règlements en vigueur.\n- Ne pas utiliser l'application à des fins illégales ou malveillantes."
+      },
+      {
+        "id": 6,
+        "titre": "Responsabilité de l'Éditeur",
+        "description": "L'éditeur de l'application met tout en œuvre pour assurer un service de qualité mais ne garantit pas l'exactitude des informations fournies (trafic, itinéraires, durée des trajets). L'utilisateur reste responsable de ses choix d'itinéraires et de sa conduite."
+      },
+      {
+        "id": 7,
+        "titre": "Protection des Données Personnelles",
+        "description": "L'application peut collecter des données de localisation pour optimiser les itinéraires. Ces données sont traitées conformément à la politique de confidentialité disponible sur l'application."
+      },
+      {
+        "id": 8,
+        "titre": "Modifications des CGU",
+        "description": "L'éditeur se réserve le droit de modifier les présentes CGU à tout moment. L'utilisateur sera informé des modifications via l'application ou par e-mail."
+      },
+      {
+        "id": 9,
+        "titre": "Droit Applicable et Litiges",
+        "description": "Les présentes CGU sont soumises au droit en vigueur dans le pays de l'éditeur. En cas de litige, une solution amiable sera privilégiée avant toute action judiciaire."
+      }
+    ]
+  }
+  

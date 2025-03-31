@@ -30,7 +30,7 @@ export default function SearchScreen() {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: '#f5f5f5',
+    backgroundColor: '#023047',
   },
   searchBar: {
     margin: 16,

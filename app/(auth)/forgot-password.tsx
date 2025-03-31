@@ -1,110 +1,317 @@
-import { useState } from 'react';
-import { View, StyleSheet } from 'react-native';
-import { TextInput, Button, Text } from 'react-native-paper';
-import { Link } from 'expo-router';
+import React, { useState } from 'react';
+import { SafeAreaView, View, Dimensions, KeyboardAvoidingView, Platform, ScrollView, StyleSheet } from 'react-native';
+import { 
+  Text, 
+  ActivityIndicator, 
+  TextInput, 
+  Button, 
+  IconButton,
+  useTheme,
+  Snackbar
+} from 'react-native-paper';
+import { Ionicons } from '@expo/vector-icons';
+import { useNavigation } from '@react-navigation/native';
+import api from '../lib/config/AxiosConfig';
+import { COLORS, SIZES } from '../lib/constants';
+import { AxiosError } from 'axios';
 
-export default function ForgotPassword() {
-  const [phone, setPhone] = useState('');
-  const [sent, setSent] = useState(false);
+const { width, height } = Dimensions.get("window");
 
-  const handleResetPassword = () => {
-    // Add password reset logic here
-    setSent(true);
-  };
+type ErrorResponse = {
+  msg?: string;
+  message?: string;
+};
 
-  return (
-    <View style={styles.container}>
-      <Text style={styles.title}>Reset Password</Text>
-      <Text style={styles.subtitle}>
-        Enter your phone number and we'll send you instructions to reset your password
-      </Text>
+type SnackbarState = {
+  visible: boolean;
+  message: string;
+  type: 'success' | 'error';
+};
 
-      {!sent ? (
-        <>
-          <TextInput
-            style={styles.input}
-            mode="outlined"
-            label="Phone Number"
-            value={phone}
-            onChangeText={setPhone}
-            keyboardType="phone-pad"
-            placeholder="+261 34 00 000 00"
-          />
+const ForgotPassword = () => {
+    const [num_tel, setNumTel] = useState('');
+    const [reset_code, setResetCode] = useState('');
+    const [isValidPhone, setIsValidPhone] = useState(false);
+    const [secureText, setSecureText] = useState(true);
+    const [codeSent, setCodeSent] = useState(false);
+    const [new_password, setNewPassword] = useState('');
+    const [confirmPassword, setConfirmPassword] = useState('');
+    const [loading, setLoading] = useState(false);
+    const [snackbar, setSnackbar] = useState<SnackbarState>({
+      visible: false,
+      message: '',
+      type: 'success'
+    });
+    
+    const navigation = useNavigation();
+    const theme = useTheme();
 
-          <Button
-            mode="contained"
-            style={styles.button}
-            onPress={handleResetPassword}
-          >
-            Send Reset Instructions
-          </Button>
-        </>
-      ) : (
-        <View style={styles.successContainer}>
-          <Text style={styles.successText}>
-            Reset instructions have been sent to your phone number.
-          </Text>
-          <Text style={styles.successSubtext}>
-            Please check your messages for further instructions.
-          </Text>
-        </View>
-      )}
+    const togglePasswordVisibility = () => setSecureText(!secureText);
+    const hideSnackbar = () => setSnackbar({...snackbar, visible: false});
 
-      <Link href="/login" style={styles.link}>
-        Back to Sign In
-      </Link>
-    </View>
-  );
-}
+    const malagasyPhoneRegex = /^(?:\+261|0)(32|33|34|38|39)\d{7}$/;
+
+    const handlePhoneNumberChange = (text: string) => {
+        setNumTel(text);
+        setIsValidPhone(malagasyPhoneRegex.test(text));
+    };
+
+    const showSnackbar = (message: string, type: 'success' | 'error') => {
+      setSnackbar({
+        visible: true,
+        message,
+        type
+      });
+    };
+
+    const handleSendCode = async () => {
+        setLoading(true);
+        try {
+            const response = await api.post('/forgot-password', { num_tel });
+            if (response.status === 200) {
+                showSnackbar('Code envoyé avec succès', 'success');
+                setCodeSent(true);
+            } else {
+                showSnackbar('Erreur lors de l\'envoi du code', 'error');
+            }
+        } catch (error: unknown) {
+            let errorMessage = 'Une erreur est survenue';
+            if (typeof error === 'object' && error !== null) {
+                const axiosError = error as AxiosError<ErrorResponse>;
+                if (axiosError.response?.data?.msg) {
+                    errorMessage = axiosError.response.data.msg;
+                } else if (axiosError.message) {
+                    errorMessage = axiosError.message;
+                }
+            }
+            showSnackbar(errorMessage, 'error');
+        } finally {
+            setLoading(false);
+        }
+    };
+
+    const handleResetPassword = async () => {
+        if (new_password !== confirmPassword) {
+            showSnackbar('Les mots de passe ne correspondent pas', 'error');
+            return;
+        }
+        if (new_password.length < 6) {
+            showSnackbar('Le mot de passe doit contenir au moins 6 caractères', 'error');
+            return;
+        }
+
+        setLoading(true);
+        try {
+            const response = await api.post('/reset-password', { 
+                num_tel, 
+                reset_code, 
+                new_password 
+            });
+            if (response.status === 200) {
+                showSnackbar('Mot de passe modifié avec succès', 'success');
+                navigation.navigate('/(auth)/login');
+            } else {
+                showSnackbar('Erreur lors de la réinitialisation du mot de passe', 'error');
+            }
+        } catch (error: unknown) {
+            let errorMessage = 'Une erreur est survenue';
+            if (typeof error === 'object' && error !== null) {
+                const axiosError = error as AxiosError<ErrorResponse>;
+                if (axiosError.response?.data?.msg) {
+                    errorMessage = axiosError.response.data.msg;
+                } else if (axiosError.message) {
+                    errorMessage = axiosError.message;
+                }
+            }
+            showSnackbar(errorMessage, 'error');
+        } finally {
+            setLoading(false);
+        }
+    };
+
+    return (
+        <SafeAreaView style={[styles.container, { backgroundColor: theme.colors.background }]}>
+            <KeyboardAvoidingView
+                behavior={Platform.OS === "ios" ? "padding" : "height"}
+                style={styles.flexContainer}
+                keyboardVerticalOffset={Platform.OS === "ios" ? 64 : 0}
+            >
+                <ScrollView contentContainerStyle={styles.scrollContainer}>
+                    <IconButton 
+                        icon="arrow-left" 
+                        size={30} 
+                        onPress={() => navigation.goBack()}
+                        style={styles.backButton}
+                        iconColor={theme.colors.primary}
+                    />
+                    
+                    <View style={styles.contentContainer}>
+                        <Text variant="headlineMedium" style={[styles.title, { color: theme.colors.primary }]}>
+                            Mot de passe oublié
+                        </Text>
+                        
+                        {!codeSent ? (
+                            <>
+                                <Text variant="bodyLarge" style={[styles.label, { color: theme.colors.primary }]}>
+                                    Veuillez saisir votre numéro de téléphone
+                                </Text>
+                                
+                                <TextInput
+                                    mode="outlined"
+                                    label="Numéro de téléphone"
+                                    placeholder='03X XX XXX XX'
+                                    value={num_tel}
+                                    onChangeText={handlePhoneNumberChange}
+                                    keyboardType='phone-pad'
+                                    style={styles.input}
+                                    theme={{ 
+                                        colors: {
+                                            primary: theme.colors.primary,
+                                        } 
+                                    }}
+                                />
+                                
+                                <Button
+                                    mode="contained"
+                                    onPress={handleSendCode}
+                                    disabled={!isValidPhone || loading}
+                                    loading={loading}
+                                    style={styles.button}
+                                    labelStyle={styles.buttonText}
+                                    theme={{ colors: { primary: theme.colors.secondary } }}
+                                >
+                                    Envoyer le code
+                                </Button>
+                            </>
+                        ) : (
+                            <>
+                                <Text variant="bodyLarge" style={[styles.label, { color: theme.colors.primary }]}>
+                                    Entrez le code de vérification et votre nouveau mot de passe
+                                </Text>
+                                
+                                <TextInput
+                                    mode="outlined"
+                                    label="Code de vérification"
+                                    value={reset_code}
+                                    onChangeText={setResetCode}
+                                    keyboardType='number-pad'
+                                    style={styles.input}
+                                    theme={{ 
+                                        colors: {
+                                            primary: theme.colors.primary,
+                                            background: theme.colors.surface
+                                        } 
+                                    }}
+                                />
+                                
+                                {[
+                                    { 
+                                        label: 'Nouveau mot de passe', 
+                                        value: new_password, 
+                                        onChange: setNewPassword 
+                                    },
+                                    { 
+                                        label: 'Confirmer le mot de passe', 
+                                        value: confirmPassword, 
+                                        onChange: setConfirmPassword 
+                                    }
+                                ].map((item, index) => (
+                                    <TextInput
+                                        key={index}
+                                        mode="outlined"
+                                        label={item.label}
+                                        value={item.value}
+                                        onChangeText={item.onChange}
+                                        secureTextEntry={secureText}
+                                        textColor={COLORS.primary}
+                                        style={styles.input}
+                                        placeholderTextColor={COLORS.primary}
+                                        right={
+                                            <TextInput.Icon 
+                                                icon={secureText ? "eye" : "eye-off"} 
+                                                onPress={togglePasswordVisibility}
+                                            />
+                                        }
+                                    />
+                                ))}
+                                
+                                <Button
+                                    mode="contained"
+                                    onPress={handleResetPassword}
+                                    disabled={loading}
+                                    loading={loading}
+                                    style={styles.button}
+                                    labelStyle={styles.buttonText}
+                                    theme={{ colors: { primary: theme.colors.secondary } }}
+                                >
+                                    Modifier le mot de passe
+                                </Button>
+                            </>
+                        )}
+                    </View>
+                </ScrollView>
+            </KeyboardAvoidingView>
+
+            <Snackbar
+                visible={snackbar.visible}
+                onDismiss={hideSnackbar}
+                duration={3000}
+                style={{ 
+                    backgroundColor: snackbar.type === 'success' 
+                        ? COLORS.green
+                        : COLORS.red 
+                }}
+            >
+                <Text style={{ color: 'white' }}>{snackbar.message}</Text>
+            </Snackbar>
+        </SafeAreaView>
+    );
+};
 
 const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    padding: 20,
-    justifyContent: 'center',
-    backgroundColor: '#fff',
-  },
-  title: {
-    fontSize: 28,
-    fontWeight: 'bold',
-    marginBottom: 8,
-    textAlign: 'center',
-    color: '#6750A4',
-  },
-  subtitle: {
-    fontSize: 16,
-    color: '#666',
-    marginBottom: 32,
-    textAlign: 'center',
-  },
-  input: {
-    marginBottom: 16,
-  },
-  button: {
-    marginTop: 8,
-    paddingVertical: 8,
-  },
-  successContainer: {
-    backgroundColor: '#E8F5E9',
-    padding: 20,
-    borderRadius: 8,
-    marginVertical: 20,
-  },
-  successText: {
-    fontSize: 16,
-    color: '#2E7D32',
-    marginBottom: 8,
-    textAlign: 'center',
-  },
-  successSubtext: {
-    fontSize: 14,
-    color: '#388E3C',
-    textAlign: 'center',
-  },
-  link: {
-    marginTop: 24,
-    color: '#6750A4',
-    textAlign: 'center',
-    textDecorationLine: 'underline',
-  },
+    container: { 
+        flex: 1,
+    },
+    flexContainer: { 
+        flex: 1 
+    },
+    scrollContainer: { 
+        flexGrow: 1, 
+        paddingHorizontal: width * 0.05, 
+        paddingTop: height * 0.02 
+    },
+    backButton: { 
+        marginTop: 20,
+        alignSelf: 'flex-start',
+        marginLeft: -20
+    },
+    contentContainer: { 
+        marginTop: height * 0.02 
+    },
+    title: { 
+        marginBottom: height * 0.02,
+        textAlign: 'center',
+        fontWeight: 'bold'
+    },
+    label: { 
+        textAlign: 'center',
+        marginBottom: height * 0.02
+    },
+    input: { 
+        marginBottom: height * 0.02,
+        backgroundColor: 'transparent'
+    },
+    button: { 
+        marginTop: height * 0.02,
+        borderRadius: 5,
+        backgroundColor: COLORS.gray,
+        padding: SIZES.medium / 2,
+        fontSize: 18,
+        fontWeight: 'bold',
+    },
+    buttonText: { 
+        color: 'white' 
+    }
 });
+
+export default ForgotPassword;

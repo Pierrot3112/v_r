@@ -1,0 +1,1226 @@
+[
+    {
+      "id": "1",
+      "id_axe": "0",
+      "nom": "ROND POINT LP ANKORONDRANO",
+      "latitude": "",
+      "longitude": "",
+      "location": "ANKORONDRANO"
+    },
+    {
+      "id": "2",
+      "id_axe": "0",
+      "nom": "ROND POINT LA CITY",
+      "latitude": "",
+      "longitude": "",
+      "location": "IVANDRY"
+    },
+    {
+      "id": "3",
+      "id_axe": "0",
+      "nom": "ROND POINT TSARASAOTRA",
+      "latitude": "",
+      "longitude": "",
+      "location": "ALAROBIA"
+    },
+    {
+      "id": "4",
+      "id_axe": "0",
+      "nom": "4 CHEMINS AMBOHIMANARINA",
+      "latitude": "",
+      "longitude": "",
+      "location": "AMBOHIMANARINA"
+    },
+    {
+      "id": "5",
+      "id_axe": "0",
+      "nom": "PHARMACIE ANTANETY",
+      "latitude": "",
+      "longitude": "",
+      "location": "AMBOHIMANARINA"
+    },
+    {
+      "id": "6",
+      "id_axe": "0",
+      "nom": "JOVENA AMBODIMITA",
+      "latitude": "",
+      "longitude": "",
+      "location": "AMBOHIMANARINA"
+    },
+    {
+      "id": "7",
+      "id_axe": "0",
+      "nom": "TERMINUS 194 AMBANY",
+      "latitude": "",
+      "longitude": "",
+      "location": "AMBOHIMANARINA"
+    },
+    {
+      "id": "8",
+      "id_axe": "0",
+      "nom": "ROND POINT ANDRANOMENA CHIC BY FABIOLA",
+      "latitude": "",
+      "longitude": "",
+      "location": "AMBOHIBAO"
+    },
+    {
+      "id": "9",
+      "id_axe": "0",
+      "nom": "4 CHEMINS AMBOHIBAO",
+      "latitude": "",
+      "longitude": "",
+      "location": "AMBOHIBAO"
+    },
+    {
+      "id": "10",
+      "id_axe": "0",
+      "nom": "TERMINUS 194 AMBONY",
+      "latitude": "",
+      "longitude": "",
+      "location": "AMBOHIMANARINA"
+    },
+    {
+      "id": "11",
+      "id_axe": "0",
+      "nom": "CROISEMENT AMBODIHADY - AMBODIMITA",
+      "latitude": "",
+      "longitude": "",
+      "location": "AMBOHIMANARINA"
+    },
+    {
+      "id": "12",
+      "id_axe": "0",
+      "nom": "SORTIE ROCADE AMBODIHADY",
+      "latitude": "",
+      "longitude": "",
+      "location": "AMBOHIMANARINA"
+    },
+    {
+      "id": "13",
+      "id_axe": "0",
+      "nom": "ROND POINT DEVANT STADE MAKI",
+      "latitude": "",
+      "longitude": "",
+      "location": "ANDOHATAPENAKA"
+    },
+    {
+      "id": "14",
+      "id_axe": "0",
+      "nom": "ANDOHATAPENAKA - CROISEMENT 67 HA",
+      "latitude": "",
+      "longitude": "",
+      "location": "ANDOHATAPENAKA, COCO, 67 HA"
+    },
+    {
+      "id": "15",
+      "id_axe": "0",
+      "nom": "ROND POINT AMPASIKA",
+      "latitude": "",
+      "longitude": "",
+      "location": "AMPASIKA"
+    },
+    {
+      "id": "16",
+      "id_axe": "0",
+      "nom": "CENAM - SORTIE POSTE",
+      "latitude": "",
+      "longitude": "",
+      "location": "67 HA"
+    },
+    {
+      "id": "17",
+      "id_axe": "0",
+      "nom": "ROND POINT JIRAMA ANDAVAMAMBA",
+      "latitude": "",
+      "longitude": "",
+      "location": "ANDAVAMAMBA"
+    },
+    {
+      "id": "18",
+      "id_axe": "0",
+      "nom": "4 CHEMINS IMMEUBLE ARO AMPEFILOHA",
+      "latitude": "",
+      "longitude": "",
+      "location": "AMPEFILOHA"
+    },
+    {
+      "id": "19",
+      "id_axe": "0",
+      "nom": "LMA AMPEFILOHA",
+      "latitude": "",
+      "longitude": "",
+      "location": "AMPEFILOHA"
+    },
+    {
+      "id": "20",
+      "id_axe": "0",
+      "nom": "ROND POINT CARLTON",
+      "latitude": "",
+      "longitude": "",
+      "location": "ANOSY"
+    },
+    {
+      "id": "21",
+      "id_axe": "0",
+      "nom": "ROND POINT AMPATSAKANA",
+      "latitude": "",
+      "longitude": "",
+      "location": "AMPEFILOHA"
+    },
+    {
+      "id": "22",
+      "id_axe": "0",
+      "nom": "ROND POINT CNAPS",
+      "latitude": "",
+      "longitude": "",
+      "location": "AMPEFILOHA"
+    },
+    {
+      "id": "23",
+      "id_axe": "0",
+      "nom": "4 CHEMINS FASAN'IRAINIARO",
+      "latitude": "",
+      "longitude": "",
+      "location": "ISOTRY"
+    },
+    {
+      "id": "24",
+      "id_axe": "0",
+      "nom": "4 CHEMINS AMBODIFIAKARANA (TOKYO AUTOS)",
+      "latitude": "",
+      "longitude": "",
+      "location": "ISOTRY"
+    },
+    {
+      "id": "25",
+      "id_axe": "0",
+      "nom": "ROND POINT POCHARD",
+      "latitude": "",
+      "longitude": "",
+      "location": "ISOTRY"
+    },
+    {
+      "id": "26",
+      "id_axe": "0",
+      "nom": "4 CHEMINS ANJARY HOTEL",
+      "latitude": "",
+      "longitude": "",
+      "location": "TSARALALANA"
+    },
+    {
+      "id": "27",
+      "id_axe": "0",
+      "nom": "4 CHEMINS COMMISSARIAT CENTRAL",
+      "latitude": "",
+      "longitude": "",
+      "location": "TSARALALANA"
+    },
+    {
+      "id": "28",
+      "id_axe": "0",
+      "nom": "4 CHEMINS UCODIS",
+      "latitude": "",
+      "longitude": "",
+      "location": "TSARALALANA"
+    },
+    {
+      "id": "29",
+      "id_axe": "0",
+      "nom": "4 CHEMINS VOYAGES BOURDON",
+      "latitude": "",
+      "longitude": "",
+      "location": "TSARALALANA"
+    },
+    {
+      "id": "30",
+      "id_axe": "0",
+      "nom": "BFV TSARALALANA",
+      "latitude": "",
+      "longitude": "",
+      "location": "TSARALALANA"
+    },
+    {
+      "id": "31",
+      "id_axe": "0",
+      "nom": "HOPITAL DES ENFANTS",
+      "latitude": "",
+      "longitude": "",
+      "location": "TSARALALANA"
+    },
+    {
+      "id": "32",
+      "id_axe": "0",
+      "nom": "CROISEMENT ANTSAHADINTA",
+      "latitude": "",
+      "longitude": "",
+      "location": "AMPITATAFIKA"
+    },
+    {
+      "id": "33",
+      "id_axe": "0",
+      "nom": "CROISEMENT ANTANIMENAKELY",
+      "latitude": "",
+      "longitude": "",
+      "location": "AMPITATAFIKA"
+    },
+    {
+      "id": "34",
+      "id_axe": "0",
+      "nom": "ROND POINT ANOSIZATO",
+      "latitude": "",
+      "longitude": "",
+      "location": "ANOSIZATO"
+    },
+    {
+      "id": "35",
+      "id_axe": "0",
+      "nom": "CROISEMENT FASAN'NY KARANA",
+      "latitude": "",
+      "longitude": "",
+      "location": "ANKADIMBAHOAKA"
+    },
+    {
+      "id": "36",
+      "id_axe": "0",
+      "nom": "ROND POINT FILATEX",
+      "latitude": "",
+      "longitude": "",
+      "location": "ANKADIMBAHOAKA"
+    },
+    {
+      "id": "37",
+      "id_axe": "0",
+      "nom": "SHELL ANKADIEVO (BY-PASS)",
+      "latitude": "",
+      "longitude": "",
+      "location": "BY-PASS"
+    },
+    {
+      "id": "38",
+      "id_axe": "0",
+      "nom": "ROND POINT TOTAL ALASORA",
+      "latitude": "",
+      "longitude": "",
+      "location": "BY-PASS"
+    },
+    {
+      "id": "39",
+      "id_axe": "0",
+      "nom": "ROND POINT AMBOHIMANAMBOLA",
+      "latitude": "",
+      "longitude": "",
+      "location": "BY-PASS"
+    },
+    {
+      "id": "40",
+      "id_axe": "0",
+      "nom": "ROND POINT AMORON'AKONA",
+      "latitude": "",
+      "longitude": "",
+      "location": "BY-PASS"
+    },
+    {
+      "id": "41",
+      "id_axe": "0",
+      "nom": "ROND POINT AMBOHIMAHITSY",
+      "latitude": "",
+      "longitude": "",
+      "location": "NOUVELLE ROCADE"
+    },
+    {
+      "id": "42",
+      "id_axe": "0",
+      "nom": "ROND POINT NANISANA",
+      "latitude": "",
+      "longitude": "",
+      "location": "NOUVELLE ROCADE"
+    },
+    {
+      "id": "43",
+      "id_axe": "0",
+      "nom": "ROND POINT ANDRANOBEVAVA",
+      "latitude": "",
+      "longitude": "",
+      "location": "NOUVELLE ROCADE"
+    },
+    {
+      "id": "44",
+      "id_axe": "0",
+      "nom": "ROND POINT JESOSY MAMONJY",
+      "latitude": "",
+      "longitude": "",
+      "location": "ANKORONDRANO"
+    },
+    {
+      "id": "45",
+      "id_axe": "0",
+      "nom": "ROND POINT ANTANIMENA AMBONY",
+      "latitude": "",
+      "longitude": "",
+      "location": "ANTANIMENA"
+    },
+    {
+      "id": "46",
+      "id_axe": "0",
+      "nom": "SORTIE VICTORIA PLAZA",
+      "latitude": "",
+      "longitude": "",
+      "location": "ANTANIMENA"
+    },
+    {
+      "id": "47",
+      "id_axe": "0",
+      "nom": "ROND POINT TOTAL ANTANIMENA",
+      "latitude": "",
+      "longitude": "",
+      "location": "ANTANIMENA"
+    },
+    {
+      "id": "48",
+      "id_axe": "0",
+      "nom": "ANKAZOMANGA - CROISEMENT ANTOHOMADINIKA",
+      "latitude": "",
+      "longitude": "",
+      "location": "ANKAZOMANGA"
+    },
+    {
+      "id": "49",
+      "id_axe": "0",
+      "nom": "ROND POINT ANKAZOMANGA",
+      "latitude": "",
+      "longitude": "",
+      "location": "ANKAZOMANGA"
+    },
+    {
+      "id": "50",
+      "id_axe": "0",
+      "nom": "ROND POINT BOULEVARD DE L'EUROPE",
+      "latitude": "",
+      "longitude": "",
+      "location": "ANKAZOMANGA"
+    },
+    {
+      "id": "51",
+      "id_axe": "0",
+      "nom": "ROND POINT IAVOLOHA",
+      "latitude": "",
+      "longitude": "",
+      "location": "IAVOLOHA"
+    },
+    {
+      "id": "52",
+      "id_axe": "0",
+      "nom": "STATION TAXI ANDOHARANOFOTSY",
+      "latitude": "",
+      "longitude": "",
+      "location": "ANDOHARANOFOTSY"
+    },
+    {
+      "id": "53",
+      "id_axe": "0",
+      "nom": "PONT TANJOMBATO",
+      "latitude": "",
+      "longitude": "",
+      "location": "TANJOMBATO"
+    },
+    {
+      "id": "54",
+      "id_axe": "0",
+      "nom": "ANKADIMBAHOAKA - CROISEMENT ANDRONDRA",
+      "latitude": "",
+      "longitude": "",
+      "location": "ANKADIMBAHOAKA"
+    },
+    {
+      "id": "55",
+      "id_axe": "0",
+      "nom": "ANKADIMBAHOAKA - CROISEMENT TSIMBAZAZA",
+      "latitude": "",
+      "longitude": "",
+      "location": "ANKADIMBAHOAKA"
+    },
+    {
+      "id": "56",
+      "id_axe": "0",
+      "nom": "ROND POINT SOANIERANA NAMONTANA",
+      "latitude": "",
+      "longitude": "",
+      "location": "SOANIERANA"
+    },
+    {
+      "id": "57",
+      "id_axe": "0",
+      "nom": "ROND POINT ANOSIBE NAMONTANA",
+      "latitude": "",
+      "longitude": "",
+      "location": "ANOSIBE"
+    },
+    {
+      "id": "58",
+      "id_axe": "0",
+      "nom": "HORIZON ITAOSY",
+      "latitude": "",
+      "longitude": "",
+      "location": "ITAOSY"
+    },
+    {
+      "id": "59",
+      "id_axe": "0",
+      "nom": "CROISEMENT RATSIMAMANGA",
+      "latitude": "",
+      "longitude": "",
+      "location": "ITAOSY"
+    },
+    {
+      "id": "60",
+      "id_axe": "0",
+      "nom": "ROND POINT ANOSIBE TSENA",
+      "latitude": "",
+      "longitude": "",
+      "location": "ANOSIBE"
+    },
+    {
+      "id": "61",
+      "id_axe": "0",
+      "nom": "ROND POINT ANOSY",
+      "latitude": "",
+      "longitude": "",
+      "location": "ANOSY"
+    },
+    {
+      "id": "62",
+      "id_axe": "0",
+      "nom": "3 CHEMINS ANKADINDRATOMBO",
+      "latitude": "",
+      "longitude": "",
+      "location": "MANDROSEZA"
+    },
+    {
+      "id": "63",
+      "id_axe": "0",
+      "nom": "CROISEMENT ANDOHAN'I MANDROSEZA",
+      "latitude": "",
+      "longitude": "",
+      "location": "MANDROSEZA"
+    },
+    {
+      "id": "64",
+      "id_axe": "0",
+      "nom": "SHELL AMBATOROKA",
+      "latitude": "",
+      "longitude": "",
+      "location": "AMBATOROKA"
+    },
+    {
+      "id": "65",
+      "id_axe": "0",
+      "nom": "ROND POINT AMBANIDIA",
+      "latitude": "",
+      "longitude": "",
+      "location": "AMBANIDIA"
+    },
+    {
+      "id": "66",
+      "id_axe": "0",
+      "nom": "ROND POINT ANKAZOTOKANA AMBANIDIA",
+      "latitude": "",
+      "longitude": "",
+      "location": "AMBANIDIA"
+    },
+    {
+      "id": "67",
+      "id_axe": "0",
+      "nom": "ROND POINT TSIMBAZAZA",
+      "latitude": "",
+      "longitude": "",
+      "location": "TSIMBAZAZA"
+    },
+    {
+      "id": "68",
+      "id_axe": "0",
+      "nom": "PALAIS DES SPORTS",
+      "latitude": "",
+      "longitude": "",
+      "location": "MAHAMASINA"
+    },
+    {
+      "id": "69",
+      "id_axe": "0",
+      "nom": "ROND POINT MAHAMASINA",
+      "latitude": "",
+      "longitude": "",
+      "location": "MAHAMASINA"
+    },
+    {
+      "id": "70",
+      "id_axe": "0",
+      "nom": "ROND POINT AMBOHIDAHY",
+      "latitude": "",
+      "longitude": "",
+      "location": "ANOSY"
+    },
+    {
+      "id": "71",
+      "id_axe": "0",
+      "nom": "ROND POINT AMBOHIJATOVO",
+      "latitude": "",
+      "longitude": "",
+      "location": "AMBOHIJATOVO"
+    },
+    {
+      "id": "72",
+      "id_axe": "0",
+      "nom": "ROND POINT ANDOHAN'ANALAKELY",
+      "latitude": "",
+      "longitude": "",
+      "location": "ANALAKELY"
+    },
+    {
+      "id": "73",
+      "id_axe": "0",
+      "nom": "CROISEMENT ANJOHY",
+      "latitude": "",
+      "longitude": "",
+      "location": "AMBANIDIA"
+    },
+    {
+      "id": "74",
+      "id_axe": "0",
+      "nom": "SCORE ANTSAHABE",
+      "latitude": "",
+      "longitude": "",
+      "location": "ANTSAHABE"
+    },
+    {
+      "id": "75",
+      "id_axe": "0",
+      "nom": "PHARMACIE ANKORAHOTRA",
+      "latitude": "",
+      "longitude": "",
+      "location": "ANKORAHOTRA"
+    },
+    {
+      "id": "76",
+      "id_axe": "0",
+      "nom": "CROISEMENT TSIADANA",
+      "latitude": "",
+      "longitude": "",
+      "location": "ANKORAHOTRA"
+    },
+    {
+      "id": "77",
+      "id_axe": "0",
+      "nom": "ANTSAKAVIRO CROISEMENT BETONGOLO",
+      "latitude": "",
+      "longitude": "",
+      "location": "ANTSAKAVIRO, FIVONDRONANA, BFV ANTSAKAVIRO"
+    },
+    {
+      "id": "78",
+      "id_axe": "0",
+      "nom": "CROISEMENT BETONGOLO CITE PLANTON",
+      "latitude": "",
+      "longitude": "",
+      "location": "ANTSAKAVIRO"
+    },
+    {
+      "id": "79",
+      "id_axe": "0",
+      "nom": "ROND POINT RASALAMA",
+      "latitude": "",
+      "longitude": "",
+      "location": "AMPANDRANA"
+    },
+    {
+      "id": "80",
+      "id_axe": "0",
+      "nom": "ROND POINT GALANA TALATAMATY",
+      "latitude": "",
+      "longitude": "",
+      "location": "TALATAMATY"
+    },
+    {
+      "id": "81",
+      "id_axe": "0",
+      "nom": "ROIND POINT CARLTON",
+      "latitude": "",
+      "longitude": "",
+      "location": "ANOSY"
+    },
+    {
+      "id": "82",
+      "id_axe": "0",
+      "nom": "ROND POINT DERRIERE STADE MAKI",
+      "latitude": "",
+      "longitude": "",
+      "location": "ANDOHATAPENAKA"
+    },
+    {
+      "id": "83",
+      "id_axe": "0",
+      "nom": "AVENUE DE L'INDEPENDANCE",
+      "latitude": "",
+      "longitude": "",
+      "location": "ANALAKELY"
+    },
+    {
+      "id": "84",
+      "id_axe": "0",
+      "nom": "CROISEMENT LA ROTONDE",
+      "latitude": "",
+      "longitude": "",
+      "location": "BESARETY"
+    },
+    {
+      "id": "85",
+      "id_axe": "0",
+      "nom": "ROND POINT AMBOHIMANGAKELY",
+      "latitude": "",
+      "longitude": "",
+      "location": "BY-PASS"
+    },
+    {
+      "id": "86",
+      "id_axe": "0",
+      "nom": "STATION TOTAL ANKADINDRAMAMY",
+      "latitude": "",
+      "longitude": "",
+      "location": "ANKADINDRAMAMY"
+    },
+    {
+      "id": "87",
+      "id_axe": "0",
+      "nom": "STATION SHELL ANKADINDRAMAMY",
+      "latitude": "",
+      "longitude": "",
+      "location": "ANKADINDRAMAMY"
+    },
+    {
+      "id": "88",
+      "id_axe": "0",
+      "nom": "AMPASAPITO CROISEMEMENT NANISANA",
+      "latitude": "",
+      "longitude": "",
+      "location": "NANISANA"
+    },
+    {
+      "id": "89",
+      "id_axe": "0",
+      "nom": "ANALAMAHITSY CROISEMENT NANISANA",
+      "latitude": "",
+      "longitude": "",
+      "location": "ANALAMAHITSY"
+    },
+    {
+      "id": "90",
+      "id_axe": "0",
+      "nom": "STATION TOTAL ANALAMAHITSY",
+      "latitude": "",
+      "longitude": "",
+      "location": "ANALAMAHITSY"
+    },
+    {
+      "id": "91",
+      "id_axe": "0",
+      "nom": "ANALAMAHITSY CROISEMENT AMBATOBE",
+      "latitude": "",
+      "longitude": "",
+      "location": "ANALAMAHITSY"
+    },
+    {
+      "id": "92",
+      "id_axe": "0",
+      "nom": "AMBOHITRARAHABA RACCOURCI ANALAMAHITSY",
+      "latitude": "",
+      "longitude": "",
+      "location": "AMBOHITRARAHABA"
+    },
+    {
+      "id": "93",
+      "id_axe": "0",
+      "nom": "AMBOHITRARAHABA CROISEMENT TANINANANDRANO",
+      "latitude": "",
+      "longitude": "",
+      "location": "AMBOHITRARAHABA"
+    },
+    {
+      "id": "94",
+      "id_axe": "0",
+      "nom": "CROISEMENT COMMUNE ANKADIKELY ILAFY",
+      "latitude": "",
+      "longitude": "",
+      "location": "ILAFY"
+    },
+    {
+      "id": "95",
+      "id_axe": "0",
+      "nom": "SORTIE ANDRONONOBE",
+      "latitude": "",
+      "longitude": "",
+      "location": "ANALAMAHITSY"
+    },
+    {
+      "id": "96",
+      "id_axe": "0",
+      "nom": "GALANA ANALAMAHITSY",
+      "latitude": "",
+      "longitude": "",
+      "location": "ANALAMAHITSY"
+    },
+    {
+      "id": "97",
+      "id_axe": "0",
+      "nom": "ROND POINT AMBATOMAINTY",
+      "latitude": "",
+      "longitude": "",
+      "location": "AMBATOMAINTY"
+    },
+    {
+      "id": "98",
+      "id_axe": "0",
+      "nom": "4 CHEMINS AMBODIVONA",
+      "latitude": "",
+      "longitude": "",
+      "location": "AMBODIVONA"
+    },
+    {
+      "id": "99",
+      "id_axe": "0",
+      "nom": "ROND POINT AMPASAPITO",
+      "latitude": "",
+      "longitude": "",
+      "location": "AMPASAPITO"
+    },
+    {
+      "id": "100",
+      "id_axe": "0",
+      "nom": "COMMUNE SABOTSY NAMEHANA",
+      "latitude": "",
+      "longitude": "",
+      "location": "SABOTSY NAMEHANA"
+    },
+    {
+      "id": "101",
+      "id_axe": "0",
+      "nom": "ROND POINT AMBATOBE (BFV-SG)",
+      "latitude": "",
+      "longitude": "",
+      "location": "AMBATOBE"
+    },
+    {
+      "id": "102",
+      "id_axe": "0",
+      "nom": "ROND POINT ANDRAVOAHANGY TSENA",
+      "latitude": "",
+      "longitude": "",
+      "location": "ANDRAVOAHANGY"
+    },
+    {
+      "id": "104",
+      "id_axe": "0",
+      "nom": "67 HA SORTIE NY HAVANA",
+      "latitude": "",
+      "longitude": "",
+      "location": "Havana, 67 HA, JOVENNA HAVANA"
+    },
+    {
+      "id": "105",
+      "id_axe": "0",
+      "nom": "67 HA 4 CHEMINS VATOBE",
+      "latitude": "",
+      "longitude": "",
+      "location": "VATOBE, 67 HA"
+    },
+    {
+      "id": "106",
+      "id_axe": "0",
+      "nom": "67 HA SUD 3 CHEMINS ARRET 30",
+      "latitude": "",
+      "longitude": "",
+      "location": "AMPASIKA, GARAGE, TRANON-JIRO, 67 HA"
+    },
+    {
+      "id": "107",
+      "id_axe": "0",
+      "nom": "3 CHEMINS GALANA BEHORIRIKA",
+      "latitude": "",
+      "longitude": "",
+      "location": "TSIAZOTAFO, AMBANY TETEZANA"
+    },
+    {
+      "id": "108",
+      "id_axe": "0",
+      "nom": "ROND POINT MAHAVOKY BESARETY",
+      "latitude": "",
+      "longitude": "",
+      "location": "MAHAVOKY, BESARETY"
+    },
+    {
+      "id": "109",
+      "id_axe": "0",
+      "nom": "MASCAR ANJANAHARY",
+      "latitude": "",
+      "longitude": "",
+      "location": "MASCAR, ANJANAHARY"
+    },
+    {
+      "id": "110",
+      "id_axe": "0",
+      "nom": "ANJANAHARY - CROISEMENT CIMETIERE",
+      "latitude": "",
+      "longitude": "",
+      "location": "AMBATOMAINTY, MASCAR"
+    },
+    {
+      "id": "111",
+      "id_axe": "0",
+      "nom": "SOARANO - BUILDING RAMAROSON",
+      "latitude": "",
+      "longitude": "",
+      "location": "RADIOLA, POCHARD"
+    },
+    {
+      "id": "112",
+      "id_axe": "0",
+      "nom": "TSIAZOTAFO - 3 CHEMINS NOSYBE HOTEL",
+      "latitude": "",
+      "longitude": "",
+      "location": null
+    },
+    {
+      "id": "113",
+      "id_axe": "0",
+      "nom": "ROND POINT ANTANINANDRO - JOVENA",
+      "latitude": "",
+      "longitude": "",
+      "location": null
+    },
+    {
+      "id": "114",
+      "id_axe": "0",
+      "nom": "ROND POINT AMBATOMITSANGANA (SUPREME CENTER)",
+      "latitude": "",
+      "longitude": "",
+      "location": "POND BEHORIRIKA, TETEZAN'I BEHORIRIKA, ANKADIFOTSY"
+    },
+    {
+      "id": "115",
+      "id_axe": "0",
+      "nom": "3 CHEMINS PHARMACIE ANKADIFOTSY",
+      "latitude": "",
+      "longitude": "",
+      "location": "LIL OPTIQUE"
+    },
+    {
+      "id": "116",
+      "id_axe": "0",
+      "nom": "ANKADIFOTSY - 3 CHEMINS CNTEMAD",
+      "latitude": "",
+      "longitude": "",
+      "location": "ANKADITAPAKA, ISCAM, OFFICE DU BACC"
+    },
+    {
+      "id": "117",
+      "id_axe": "0",
+      "nom": "CROISEMENT CATHEDRALE ANTANIMENA",
+      "latitude": "",
+      "longitude": "",
+      "location": "EKAR ANTANIMENA, ESCA ANTANIMENA"
+    },
+    {
+      "id": "118",
+      "id_axe": "0",
+      "nom": "3 CHEMINS TOTOBATON'AMBONDRONA",
+      "latitude": "",
+      "longitude": "",
+      "location": "FARAVOHITRA"
+    },
+    {
+      "id": "119",
+      "id_axe": "0",
+      "nom": "4 CHEMINS HOTEL PALISSANDRE",
+      "latitude": "",
+      "longitude": "",
+      "location": "FARAVOHITRA AMBANY, AMBONDRONA"
+    },
+    {
+      "id": "120",
+      "id_axe": "0",
+      "nom": "ROND POINT RATSIMANDRAVA",
+      "latitude": "",
+      "longitude": "",
+      "location": "AMBOHIJATOVO, AMBOHIJATOVO AMBONY, FARAVOHITRA"
+    },
+    {
+      "id": "121",
+      "id_axe": "0",
+      "nom": "3 CHEMINS EKAR FARAVOHITRA",
+      "latitude": "",
+      "longitude": "",
+      "location": "SELESY, JULES FERRY, ANTANINANDRO"
+    },
+    {
+      "id": "122",
+      "id_axe": "0",
+      "nom": "ROND POINT ANDRAVOAHANGY AMBONY (MERCURY)",
+      "latitude": "",
+      "longitude": "",
+      "location": "ANDRAVOHANGY FIVAVAHANA, ANTANINANDRO"
+    },
+    {
+      "id": "123",
+      "id_axe": "0",
+      "nom": "3 CHEMINS MINISTERE DEFENSE BETONGOLO",
+      "latitude": "",
+      "longitude": "",
+      "location": "AMPAHIBE"
+    },
+    {
+      "id": "124",
+      "id_axe": "0",
+      "nom": "3 CHEMINS INSTITUT PASTEUR AVARADOHA",
+      "latitude": "",
+      "longitude": "",
+      "location": "AMBOHITRAKELY, MAHAVOKY, BESARETY"
+    },
+    {
+      "id": "125",
+      "id_axe": "0",
+      "nom": "ANTANIMORA CROISEMENT ANDRAINARIVO",
+      "latitude": "",
+      "longitude": "",
+      "location": "GAZETY, ANKORAHOTRA"
+    },
+    {
+      "id": "126",
+      "id_axe": "0",
+      "nom": "4 CHEMINS ANTSAHAVOLA",
+      "latitude": "",
+      "longitude": "",
+      "location": "COCO BE, STATION SHELL ANTSAHAVOLA, ISORAKA, SAKAMANGA"
+    },
+    {
+      "id": "127",
+      "id_axe": "0",
+      "nom": "ISORAKA - 3 CHEMINS MARCO MANSON",
+      "latitude": "",
+      "longitude": "",
+      "location": "FASAN-DRAINIARO, AMPASAMADINIKA"
+    },
+    {
+      "id": "128",
+      "id_axe": "0",
+      "nom": "4 CHEMINS ISOTRY",
+      "latitude": "",
+      "longitude": "",
+      "location": "AMBODI-FIAKARANA, TSARALALANA"
+    },
+    {
+      "id": "129",
+      "id_axe": "0",
+      "nom": "CROISEMENT LAPAN'NY PIECES AMPEFILOHA",
+      "latitude": "",
+      "longitude": "",
+      "location": null
+    },
+    {
+      "id": "130",
+      "id_axe": "0",
+      "nom": "ROND POINT ISOTRY",
+      "latitude": "",
+      "longitude": "",
+      "location": "HIDIN-DALAMBY"
+    },
+    {
+      "id": "131",
+      "id_axe": "0",
+      "nom": "ROND POINT PONT VASSACOS",
+      "latitude": "",
+      "longitude": "",
+      "location": "ARRET AMBATONDRAZAKA"
+    },
+    {
+      "id": "132",
+      "id_axe": "0",
+      "nom": "3 CHEMINS TSENAN'NY TANTSAHA ANTOHOMADINIKA",
+      "latitude": "",
+      "longitude": "",
+      "location": "ANTANIMENA AMBANY, VASSACOS"
+    },
+    {
+      "id": "133",
+      "id_axe": "0",
+      "nom": "67 HA - 4 CHEMINS HOTELY MANGA",
+      "latitude": "",
+      "longitude": "",
+      "location": "PARKING 67 HA, JESOSY MAMONJY 67 HA"
+    },
+    {
+      "id": "134",
+      "id_axe": "0",
+      "nom": "67 HA - CROISEMENT BONARA BE",
+      "latitude": "",
+      "longitude": "",
+      "location": "PARKING 67 HA, COUM 67 HA"
+    },
+    {
+      "id": "135",
+      "id_axe": "0",
+      "nom": "67 HA - COUM (PISCINE)",
+      "latitude": "",
+      "longitude": "",
+      "location": "ART MALAGASY 67"
+    },
+    {
+      "id": "136",
+      "id_axe": "0",
+      "nom": "ROND POINT SEIMAD",
+      "latitude": "",
+      "longitude": "",
+      "location": "BOULEVARD DE L'EUROPE"
+    },
+    {
+      "id": "137",
+      "id_axe": "0",
+      "nom": "4 CHEMINS CITE AMBATONAKANGA",
+      "latitude": "",
+      "longitude": "",
+      "location": "ISORAKA, ANTANINARENINA"
+    },
+    {
+      "id": "138",
+      "id_axe": "0",
+      "nom": "ST MICHEL AMPARIBE",
+      "latitude": "",
+      "longitude": "",
+      "location": "AMBOHITSIROHITRA AMBANY, LAC ANOSY, AMBOHIDAHY"
+    },
+    {
+      "id": "139",
+      "id_axe": "0",
+      "nom": "67HA MADA HOTEL (MIN FOP)",
+      "latitude": "",
+      "longitude": "",
+      "location": null
+    },
+    {
+      "id": "140",
+      "id_axe": "0",
+      "nom": "ROND POINT ANOSY - ANTSAHAMANITRA",
+      "latitude": "",
+      "longitude": "",
+      "location": "LAC ANOSY"
+    },
+    {
+      "id": "141",
+      "id_axe": "0",
+      "nom": "ROND POINT ANTANINARENINA",
+      "latitude": "",
+      "longitude": "",
+      "location": "AMBOHITSIROHITRA"
+    },
+    {
+      "id": "142",
+      "id_axe": "0",
+      "nom": "ANTANINARENINA - LE LOUVRE",
+      "latitude": "",
+      "longitude": "",
+      "location": "JARDIN ANTANINARENINA, BUFFET DU JARDIN, POSTE ANTANINARENINA, BOA ANTANINARENINA"
+    },
+    {
+      "id": "143",
+      "id_axe": "0",
+      "nom": "3 CHEMINS - SUITE 101",
+      "latitude": "",
+      "longitude": "",
+      "location": "PERGOLA, METROPOLE, FANORONA"
+    },
+    {
+      "id": "144",
+      "id_axe": "0",
+      "nom": "4 CHEMINS - RADISSON AMBOHIJATOVO",
+      "latitude": "",
+      "longitude": "",
+      "location": "AMBATONANKANGA, AMBOHIJATOVO AMBONY"
+    },
+    {
+      "id": "145",
+      "id_axe": "0",
+      "nom": "ISORAKA - RESIDENCE LAPASOA",
+      "latitude": "",
+      "longitude": "",
+      "location": "ANTANINARENINA"
+    },
+    {
+      "id": "146",
+      "id_axe": "0",
+      "nom": "ARRET BUS MASERA ILANIVATO",
+      "latitude": "",
+      "longitude": "",
+      "location": "ANOSIPATRANA"
+    },
+    {
+      "id": "147",
+      "id_axe": "0",
+      "nom": "SORTIE DIGUE - MBS ANOSIPATRANA",
+      "latitude": "",
+      "longitude": "",
+      "location": "ANOSIZATO"
+    },
+    {
+      "id": "148",
+      "id_axe": "0",
+      "nom": "ROND POINT LTC AMPEFILOHA",
+      "latitude": "",
+      "longitude": "",
+      "location": "ALLIANCE ANDAVAMAMBA, BARRIERE LALAMBY"
+    },
+    {
+      "id": "149",
+      "id_axe": "0",
+      "nom": "ANDAVAMAMBA - CROISEMENT ANATIHAZO ISOTRY",
+      "latitude": "",
+      "longitude": "",
+      "location": "MANARINTSOA, CENAM"
+    },
+    {
+      "id": "150",
+      "id_axe": "0",
+      "nom": "67 HA SUD SORTIE CENAM (POSTE)",
+      "latitude": "",
+      "longitude": "",
+      "location": "GARAGE 67"
+    },
+    {
+      "id": "151",
+      "id_axe": "0",
+      "nom": "3 CHEMINS ANJOHY-ANDOHALO",
+      "latitude": "",
+      "longitude": "",
+      "location": null
+    },
+    {
+      "id": "152",
+      "id_axe": "0",
+      "nom": "BESARETY - GARAGE DAVID",
+      "latitude": "",
+      "longitude": "",
+      "location": null
+    },
+    {
+      "id": "153",
+      "id_axe": "0",
+      "nom": "4 CHEMINS ANJARY HOTEL TSARALALANA",
+      "latitude": "",
+      "longitude": "",
+      "location": null
+    },
+    {
+      "id": "154",
+      "id_axe": "0",
+      "nom": "ROND POINT BOULEVARD DE L'EUROPE ANKAZOMANGA",
+      "latitude": "",
+      "longitude": "",
+      "location": null
+    }
+  ]

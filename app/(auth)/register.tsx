@@ -1,10 +1,13 @@
 import { useState } from 'react';
-import { View, StyleSheet, ScrollView } from 'react-native';
+import { View, StyleSheet, ScrollView, Modal, TouchableOpacity } from 'react-native';
 import { TextInput, Button, Text, Snackbar, Checkbox } from 'react-native-paper';
-import { useAuth } from '../context/AuthContext';
-import { Link } from 'expo-router';
+import { useAuth } from '../lib/context/AuthContext';
+import { Link, useRouter } from 'expo-router';
+import ConditionModal from '../lib/components/ConditionModal';
+import { COLORS } from '../lib/constants';
 
 export default function Register() {
+  const router = useRouter();
   const [formData, setFormData] = useState({
     nom: '',
     num_tel: '',
@@ -16,6 +19,7 @@ export default function Register() {
   const [secureText, setSecureText] = useState(true);
   const [secureTextConfirm, setSecureTextConfirm] = useState(true);
   const [loading, setLoading] = useState(false);
+  const [modalVisible, setModalVisible] = useState(false);
 
   // Snackbar states
   const [snackbarVisible, setSnackbarVisible] = useState(false);
@@ -23,7 +27,19 @@ export default function Register() {
   const [snackbarType, setSnackbarType] = useState<'error' | 'success'>('error');
 
   const { onRegister } = useAuth();
-  const malagasyPhoneRegex = /^(?:\+261|0)(32|33|34|38|39)\d{7}$/;
+  const malagasyPhoneRegex = /^0(32|33|34|38|39)\d{7}$/;
+
+  const formatPhoneNumber = (input: string) => {
+    let cleaned = input.replace(/\D/g, '').substring(0, 10);
+    let formatted = '';
+    
+    if (cleaned.length > 0) formatted = cleaned.substring(0, 3);
+    if (cleaned.length > 3) formatted += ' ' + cleaned.substring(3, 5);
+    if (cleaned.length > 5) formatted += ' ' + cleaned.substring(5, 8);
+    if (cleaned.length > 8) formatted += ' ' + cleaned.substring(8, 10);
+    
+    return formatted;
+  };
 
   const showSnackbar = (message: string, type: 'error' | 'success' = 'error') => {
     setSnackbarMessage(message);
@@ -32,74 +48,67 @@ export default function Register() {
   };
 
   const handleRegister = async () => {
-    // Validation côté client
     if (!formData.nom.trim()) {
       showSnackbar('Veuillez entrer votre nom');
       return;
     }
-
-    if (!formData.num_tel.trim()) {
-      showSnackbar('Veuillez entrer votre numéro de téléphone');
+  
+    const cleanedPhone = formData.num_tel.replace(/\s/g, '');
+    
+    if (!malagasyPhoneRegex.test(cleanedPhone)) {
+      showSnackbar('Numéro malgache invalide. Format: 034 00 000 00');
       return;
     }
-
-    if (!malagasyPhoneRegex.test(formData.num_tel)) {
-      showSnackbar('Numéro malgache invalide. Format: +261 XX XXX XX XX ou 0XX XXX XX XX');
-      return;
-    }
-
-    if (!formData.password) {
-      showSnackbar('Veuillez entrer un mot de passe');
-      return;
-    }
-
+  
     if (formData.password.length < 6) {
       showSnackbar('Le mot de passe doit contenir au moins 6 caractères');
       return;
     }
-
+  
     if (formData.password !== formData.confirmPassword) {
       showSnackbar('Les mots de passe ne correspondent pas');
       return;
     }
-
+  
     if (!acceptTerms) {
       setShowCheckboxError(true);
       showSnackbar('Vous devez accepter les conditions');
       return;
     }
-
+  
     setLoading(true);
-
+  
     try {
       const result = await onRegister(
         formData.nom.trim(),
-        formData.num_tel.trim(),
+        cleanedPhone,
         formData.password
       );
-      
+  
+  
       if (result.error) {
-        showSnackbar(result.msg || "Erreur lors de l'inscription");
+        showSnackbar(result.msg);
       } else {
-        showSnackbar(result.msg || "Inscription réussie!", 'success');
-        setFormData({
-          nom: '',
-          num_tel: '',
-          password: '',
-          confirmPassword: '',
-        });
-        setAcceptTerms(false);
+        showSnackbar("Inscription réussie!", 'success');
+        setTimeout(() => {
+          router.push({
+            pathname: '/(auth)/validCodeSms',
+            params: { phoneNumber: cleanedPhone }
+          });
+        }, 1500);
       }
     } catch (error) {
-      showSnackbar("Une erreur inattendue est survenue");
-      console.error("Registration error:", error);
+      showSnackbar("Erreur lors de la communication avec le serveur");
     } finally {
       setLoading(false);
     }
   };
 
   const handleChange = (name: keyof typeof formData, value: string) => {
-    setFormData(prev => ({ ...prev, [name]: value }));
+    setFormData(prev => ({
+      ...prev,
+      [name]: name === 'num_tel' ? formatPhoneNumber(value) : value
+    }));
   };
 
   return (
@@ -115,6 +124,7 @@ export default function Register() {
           value={formData.nom}
           onChangeText={(text) => handleChange('nom', text)}
           autoCapitalize="words"
+          textColor='#ffffff'
         />
 
         <TextInput
@@ -124,7 +134,8 @@ export default function Register() {
           value={formData.num_tel}
           onChangeText={(text) => handleChange('num_tel', text)}
           keyboardType="phone-pad"
-          placeholder="+261 34 00 000 00"
+          placeholder="034 00 000 00"
+          textColor='#ffffff'
         />
 
         <TextInput
@@ -134,10 +145,12 @@ export default function Register() {
           value={formData.password}
           onChangeText={(text) => handleChange('password', text)}
           secureTextEntry={secureText}
+          textColor='#ffffff'
           right={
             <TextInput.Icon
               icon={secureText ? 'eye-off' : 'eye'}
               onPress={() => setSecureText(!secureText)}
+              color={'#ffffff'}
             />
           }
         />
@@ -149,10 +162,12 @@ export default function Register() {
           value={formData.confirmPassword}
           onChangeText={(text) => handleChange('confirmPassword', text)}
           secureTextEntry={secureTextConfirm}
+          textColor='#ffffff'
           right={
             <TextInput.Icon
               icon={secureTextConfirm ? 'eye-off' : 'eye'}
               onPress={() => setSecureTextConfirm(!secureTextConfirm)}
+              color={'#ffffff'}
             />
           }
         />
@@ -164,9 +179,17 @@ export default function Register() {
               setAcceptTerms(!acceptTerms);
               setShowCheckboxError(false);
             }}
-            color="#6750A4"
+            color="#fb8500"
           />
-          <Text style={styles.checkboxText}>J'accepte les termes et conditions</Text>
+          <Text style={styles.checkboxText}>
+            J'accepte les{' '}
+            <Text 
+              style={{ color: '#fb8500', textDecorationLine: 'underline' }}
+              onPress={() => setModalVisible(true)}
+            >
+              termes et conditions
+            </Text>
+          </Text>
         </View>
         {showCheckboxError && (
           <Text style={styles.errorText}>Vous devez accepter les conditions</Text>
@@ -184,12 +207,30 @@ export default function Register() {
         </Button>
 
         <View style={styles.footer}>
-          <Text>Vous avez déjà un compte? </Text>
+          <Text style={styles.footerText}>Vous avez déjà un compte? </Text>
           <Link href="/login" style={styles.link}>
             Se connecter
           </Link>
         </View>
       </ScrollView>
+
+      <Modal
+        animationType="slide"
+        transparent={false}
+        visible={modalVisible}
+        onRequestClose={() => setModalVisible(false)}
+      >
+        <View style={styles.headModal}>
+          <TouchableOpacity 
+            style={styles.modalCloseButton}
+            onPress={() => setModalVisible(false)}
+          >
+            <Text style={styles.modalCloseText}>×</Text>
+          </TouchableOpacity>
+          
+          <ConditionModal />
+        </View>
+      </Modal>
 
       <Snackbar
         visible={snackbarVisible}
@@ -199,10 +240,6 @@ export default function Register() {
           styles.snackbar,
           snackbarType === 'success' ? styles.successSnackbar : styles.errorSnackbar
         ]}
-        action={{
-          label: 'OK',
-          onPress: () => setSnackbarVisible(false),
-        }}
       >
         {snackbarMessage}
       </Snackbar>
@@ -213,10 +250,14 @@ export default function Register() {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: '#fff',
+    backgroundColor: '#023047',
+    justifyContent: 'center',
+    minHeight: '100%',
+    padding: 5,
+    paddingTop: 50,
   },
   scrollContent: {
-    padding: 20,
+    padding: 15,
     paddingBottom: 40,
   },
   title: {
@@ -224,22 +265,22 @@ const styles = StyleSheet.create({
     fontWeight: 'bold',
     marginBottom: 8,
     textAlign: 'center',
-    color: '#6750A4',
+    color: '#fb8500',
   },
   subtitle: {
     fontSize: 16,
-    color: '#666',
+    color: '#8ecae6',
     marginBottom: 32,
     textAlign: 'center',
   },
   input: {
     marginBottom: 16,
-    backgroundColor: '#fff',
+    backgroundColor: 'transparent',
   },
   button: {
     marginTop: 16,
     paddingVertical: 8,
-    backgroundColor: '#6750A4',
+    backgroundColor: '#fb8500',
   },
   buttonLabel: {
     color: '#fff',
@@ -251,8 +292,11 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     alignItems: 'center',
   },
+  footerText: {
+    color: '#8ecae6',
+  },
   link: {
-    color: '#6750A4',
+    color: '#fb8500',
     fontWeight: 'bold',
     textDecorationLine: 'underline',
   },
@@ -263,7 +307,7 @@ const styles = StyleSheet.create({
   },
   checkboxText: {
     marginLeft: 8,
-    color: '#333',
+    color: '#FFFFFF',
   },
   errorText: {
     color: 'red',
@@ -277,9 +321,64 @@ const styles = StyleSheet.create({
     right: 0,
   },
   successSnackbar: {
-    backgroundColor: '#4CAF50',
+    backgroundColor: COLORS.green,
   },
   errorSnackbar: {
-    backgroundColor: '#F44336',
+    backgroundColor: COLORS.red,
   },
+  modalContainer: {
+    flex: 1,
+    justifyContent: 'center',
+    alignItems: 'center',
+    backgroundColor: 'rgba(0,0,0,0.5)',
+  },
+  modalContent: {
+    width: '90%',
+    maxHeight: '80%',
+    backgroundColor: '#023047',
+    borderRadius: 10,
+    padding: 20,
+    borderWidth: 1,
+    borderColor: '#fb8500',
+  },
+  modalCloseButton: {
+    alignSelf: 'flex-end',
+    marginBottom: 10,
+  },
+  modalCloseText: {
+    color: 'red',
+    fontSize: 24,
+    fontWeight: 'bold',
+  },
+  modalTitle: {
+    fontSize: 20,
+    fontWeight: 'bold',
+    color: '#fb8500',
+    marginBottom: 15,
+    textAlign: 'center',
+  },
+  modalText: {
+    color: '#FFFFFF',
+    fontSize: 14,
+    lineHeight: 20,
+  },
+  modalScroll: {
+    maxHeight: '80%',
+  },
+  modal: {
+      height: '98%',
+      width: '98%',
+      alignSelf: 'center',
+      position: 'relative',
+      top: -2,
+  },
+
+  headModal: {
+      backgroundColor: COLORS.bgBlue,
+      paddingHorizontal: 20,
+      borderRadius: 10,
+      paddingTop: 50,
+      paddingBottom: 20,
+  },
+
 });

@@ -1,33 +1,24 @@
-import { Tabs } from 'expo-router';
-import { Search, Heart, User, LogOut } from 'lucide-react-native';
-import { Appbar } from 'react-native-paper';
-import { StyleSheet, View, Text } from 'react-native';
-import { useAuth } from '../context/AuthContext'; 
-import api from '../config/AxiosConfig';
-
-function Header() {
-  const { authState, onLogout } = useAuth();
-
-  const me = api.get('/me');
-  return (
-    <Appbar.Header style={styles.header}>
-      <View style={styles.headerSection}>
-        <Text style={styles.phoneNumber}>
-          Numero
-        </Text>
-      </View>
-      <View style={styles.headerSection}>
-        <Text style={styles.logo}>VOIE RAPIDE</Text>
-      </View>
-      <View style={styles.headerSection}>
-        <Text style={styles.balance}>Credits: $100</Text>
-      </View>
-    </Appbar.Header>
-  );
-}
+import { Tabs, useRouter } from 'expo-router';
+import { User, LogOut, Home } from 'lucide-react-native';
+import { StyleSheet, View, Modal, Pressable, Text } from 'react-native';
+import { useAuth } from '../lib/context/AuthContext';
+import Header from '../lib/components/header';
+import { useState } from 'react';
 
 export default function TabLayout() {
-  const { onLogout } = useAuth(); 
+  const { onLogout } = useAuth();
+  const [modalVisible, setModalVisible] = useState(false);
+  const router = useRouter();
+
+  const showModal = () => setModalVisible(true);
+  const hideModal = () => setModalVisible(false);
+
+  const handleLogout = () => {
+    hideModal();
+    onLogout().then(() => {
+      router.replace('/(auth)/login'); 
+    });
+  };
 
   return (
     <View style={styles.container}>
@@ -36,46 +27,79 @@ export default function TabLayout() {
         screenOptions={{
           header: () => null,
           tabBarStyle: styles.tabBar,
-          tabBarActiveTintColor: '#6750A4',
+          tabBarActiveTintColor: '#023047',
+          tabBarInactiveTintColor: '#FFFFFF',
           tabBarShowLabel: true,
+          tabBarLabelStyle: {
+            fontSize: 14,
+            marginTop: -5,
+          },
         }}
-        initialRouteName="search"
+        initialRouteName="home"
       >
         <Tabs.Screen
-          name="search"
+          name="home"
           options={{
-            title: 'Search',
-            tabBarIcon: ({ color, size }) => <Search size={size} color={color} />,
+            title: 'Accueil',
+            tabBarIcon: ({ color, size }) => <Home size={size} color={color} />,
           }}
-        />
-        <Tabs.Screen
-          name="favorites"
-          options={{
-            title: 'Favorites',
-            tabBarIcon: ({ color, size }) => <Heart size={size} color={color} />,
-          }}
+          listeners={() => ({
+            tabPress: (e) => {
+              router.navigate({
+                pathname: '/home',
+                params: { reset: Date.now() },
+              });
+            },
+          })}
         />
         <Tabs.Screen
           name="account"
           options={{
-            title: 'Account',
+            title: 'Compte',
             tabBarIcon: ({ color, size }) => <User size={size} color={color} />,
           }}
         />
         <Tabs.Screen
           name="logout"
           options={{
-            title: 'Logout',
+            title: 'Déconnexion',
             tabBarIcon: ({ color, size }) => <LogOut size={size} color={color} />,
           }}
           listeners={() => ({
             tabPress: (e) => {
               e.preventDefault();
-              onLogout();
+              showModal();
             },
           })}
         />
       </Tabs>
+
+      <Modal
+        animationType="fade"
+        transparent={true}
+        visible={modalVisible}
+        onRequestClose={hideModal}
+      >
+        <View style={styles.centeredView}>
+          <View style={styles.modalView}>
+            <Text style={styles.modalText}>Êtes-vous sûr de vouloir vous déconnecter ?</Text>
+            <View style={styles.modalButtons}>
+              <Pressable
+                style={[styles.button, styles.buttonCancel]}
+                onPress={hideModal}
+              >
+                <Text style={styles.textStyle}>Annuler</Text>
+              </Pressable>
+              <Pressable
+                style={[styles.button, styles.buttonConfirm]}
+                onPress={handleLogout}
+              >
+                <Text style={styles.textStyle}>Confirmer</Text>
+              </Pressable>
+            </View>
+          </View>
+        </View>
+      </Modal>
     </View>
   );
 }
@@ -84,36 +108,56 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
   },
-  header: {
-    backgroundColor: '#fff',
-    elevation: 4,
-    shadowColor: '#000',
-    shadowOffset: { width: 0, height: 2 },
-    shadowOpacity: 0.2,
-    shadowRadius: 2,
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-  },
-  headerSection: {
-    flex: 1,
-    alignItems: 'center',
-    justifyContent: 'center',
-    padding: 10,
-  },
-  phoneNumber: {
-    fontSize: 12,
-  },
-  logo: {
-    fontSize: 18,
-    fontWeight: 'bold',
-  },
-  balance: {
-    fontSize: 12,
-    color: '#6750A4',
-  },
   tabBar: {
-    backgroundColor: '#fff',
-    borderTopWidth: 1,
-    borderTopColor: '#e0e0e0',
+    backgroundColor: '#fb8500',
+    height: 60,
+    justifyContent: 'center',
+  },
+  centeredView: {
+    flex: 1,
+    justifyContent: 'center',
+    alignItems: 'center',
+    backgroundColor: 'rgba(0, 0, 0, 0.5)',
+  },
+  modalView: {
+    backgroundColor: 'white',
+    borderRadius: 20,
+    padding: 35,
+    alignItems: 'center',
+    shadowColor: '#000',
+    shadowOffset: {
+      width: 0,
+      height: 2,
+    },
+    shadowOpacity: 0.25,
+    shadowRadius: 4,
+    elevation: 5,
+  },
+  modalButtons: {
+    flexDirection: 'row',
+    marginTop: 20,
+    gap: 10,
+  },
+  button: {
+    borderRadius: 10,
+    padding: 10,
+    paddingHorizontal: 20,
+    elevation: 2,
+  },
+  buttonConfirm: {
+    backgroundColor: '#fb8500',
+  },
+  buttonCancel: {
+    backgroundColor: '#023047',
+  },
+  textStyle: {
+    color: 'white',
+    fontWeight: 'bold',
+    textAlign: 'center',
+  },
+  modalText: {
+    marginBottom: 15,
+    textAlign: 'center',
+    fontSize: 16,
   },
 });
