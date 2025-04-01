@@ -4,6 +4,7 @@ import { TextInput, Button, Text, Snackbar, Checkbox } from 'react-native-paper'
 import { useAuth } from '../lib/context/AuthContext';
 import { Link, useRouter } from 'expo-router';
 import ConditionModal from '../lib/components/ConditionModal';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 import { COLORS } from '../lib/constants';
 
 export default function Register() {
@@ -20,8 +21,6 @@ export default function Register() {
   const [secureTextConfirm, setSecureTextConfirm] = useState(true);
   const [loading, setLoading] = useState(false);
   const [modalVisible, setModalVisible] = useState(false);
-
-  // Snackbar states
   const [snackbarVisible, setSnackbarVisible] = useState(false);
   const [snackbarMessage, setSnackbarMessage] = useState('');
   const [snackbarType, setSnackbarType] = useState<'error' | 'success'>('error');
@@ -89,11 +88,19 @@ export default function Register() {
       if (result.error) {
         showSnackbar(result.msg);
       } else {
+        const cleanedPhone = formData.num_tel.replace(/\s/g, '') || "0340000000"; 
+        
         showSnackbar("Inscription réussie!", 'success');
+        const now = Date.now();
+        await AsyncStorage.setItem('lastResendTime', now.toString());
+       
         setTimeout(() => {
           router.push({
             pathname: '/(auth)/validCodeSms',
-            params: { phoneNumber: cleanedPhone }
+            params: { 
+              phoneNumber: cleanedPhone,
+              forceTimer: 'true' 
+            }
           });
         }, 1500);
       }

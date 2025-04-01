@@ -19,16 +19,12 @@ export default function Login() {
     setSnackbarVisible(true);
   };
 
-  const login = () => {
-    router.replace('/(tabs)/home');
-  } 
-
   const handleLogin = async () => {
     if (!num_tel || !password) {
       showSnackbar('Tous les champs sont obligatoires');
       return;
     }
-  
+
     setLoading(true);
     try {
       const result = await onLogin(num_tel.trim(), password.trim());
@@ -44,6 +40,11 @@ export default function Login() {
     }
   };
 
+  const handleNumTelChange = (text: string) => {
+    const formattedText = text.replace(/[^0-9]/g, '').slice(0, 10); // Supprime tout sauf les chiffres et limite à 10 caractères
+    setNumTel(formattedText);
+  };
+
   return (
     <View style={styles.container}>
       <Text style={styles.title}>Voie Rapide</Text>
@@ -54,9 +55,9 @@ export default function Login() {
         mode="outlined"
         label="Numéro mobile"
         value={num_tel}
-        onChangeText={setNumTel}
+        onChangeText={handleNumTelChange}
         keyboardType="phone-pad"
-        placeholder="034 00 000 00"
+        placeholder="0340000000"
         textColor='#fff'
         theme={{ colors: { onSurfaceVariant: '#fff' } }}
       />

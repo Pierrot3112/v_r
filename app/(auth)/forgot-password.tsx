@@ -164,6 +164,7 @@ const ForgotPassword = () => {
                                     onChangeText={handlePhoneNumberChange}
                                     keyboardType='phone-pad'
                                     style={styles.input}
+                                    textColor={COLORS.primary}
                                     theme={{ 
                                         colors: {
                                             primary: theme.colors.primary,

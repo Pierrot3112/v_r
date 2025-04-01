@@ -152,7 +152,7 @@ const RouteDetailScreen = ({ itineraryId, onBack }: RouteDetailScreenProps) => {
       case 'VERT':
         return COLORS.green;
       case 'ORANGE':
-        return COLORS.bgBlue;
+        return COLORS.yellow;
       case 'ROUGE':
         return COLORS.red;
       default:
@@ -199,6 +199,23 @@ const RouteDetailScreen = ({ itineraryId, onBack }: RouteDetailScreenProps) => {
         </Text>
       </View>
 
+      <Card style={styles.routeSummaryCard}>
+        <Card.Content>
+          <Text style={styles.routeText}>
+            Départ : {routeDetails?.depart_nom}
+          </Text>
+          <Text style={styles.routeText}>
+            Arrivée : {routeDetails?.arrivee_nom}
+          </Text>
+          <Text style={styles.routeText}>
+            Distance : {routeDetails?.distance} km
+          </Text>
+          <Text style={styles.routeText}>
+            Durée totale : {Number(routeDetails?.somme_duree_trajection).toFixed(0)} min
+          </Text>
+        </Card.Content>
+      </Card>
+
       <ScrollView
         contentContainerStyle={styles.contentContainer}
         refreshControl={
@@ -210,22 +227,6 @@ const RouteDetailScreen = ({ itineraryId, onBack }: RouteDetailScreenProps) => {
           />
         }
       >
-        <Card style={styles.routeSummaryCard}>
-          <Card.Content>
-            <Text style={styles.routeText}>
-              Départ : {routeDetails?.depart_nom}
-            </Text>
-            <Text style={styles.routeText}>
-              Arrivée : {routeDetails?.arrivee_nom}
-            </Text>
-            <Text style={styles.routeText}>
-              Distance : {routeDetails?.distance} km
-            </Text>
-            <Text style={styles.routeText}>
-              Durée totale : {Number(routeDetails?.somme_duree_trajection).toFixed(0)} min
-            </Text>
-          </Card.Content>
-        </Card>
 
         {routeDetails?.connections?.map((connection, index) => (
           <View key={`connection-${index}`} style={styles.routeSegmentCard}>
@@ -308,7 +309,6 @@ const styles = StyleSheet.create({
     display: 'flex',
     flexDirection: 'row',
     alignItems: 'center',
-    marginVertical: 10,
   },
   contentContainer: {
     padding: width * 0.04,
@@ -345,7 +345,10 @@ const styles = StyleSheet.create({
   locationBadge: {
     marginLeft: width * 0.02,
     fontSize: width * 0.04,
-    backgroundColor: 'transparent'
+    backgroundColor: 'transparent',
+    flexWrap: 'wrap',
+    width: '80%', 
+    alignItems: 'flex-start',
   },
   segmentDetails: {
     marginLeft: width * 0.1,

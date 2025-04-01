@@ -11,7 +11,7 @@ const COLORS = {
     complementaryOrange: "#dc6e08",
 
     gray: "#fb8500",
-    gray2: "#023047",
+    gray2: "#aba9bf",
 
     offwhite: "#F3F4F8",
     white: "#FFFFFF",

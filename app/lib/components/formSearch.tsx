@@ -51,7 +51,8 @@ const FormSearch = ({ onSearchSubmit }: FormSearchProps) => {
     setHiddenInputValue(searchQuery);
   }, [searchQuery]);
 
-  const handleSearch = () => {
+  const handleSearch = useCallback((query: string) => {
+    setSearchQuery(query);
 
     if (timeoutRef.current) {
       clearTimeout(timeoutRef.current);
@@ -59,15 +60,15 @@ const FormSearch = ({ onSearchSubmit }: FormSearchProps) => {
 
     timeoutRef.current = setTimeout(() => {
       const filtered = pointsData.filter(point => {
-        const searchText = searchQuery.toLowerCase();
+        const searchText = query.toLowerCase();
         return (
           point.nom.toLowerCase().includes(searchText) ||
           (point.location?.toLowerCase() || "").includes(searchText)
         );
       });
       setFilteredPoints(filtered);
-    }, 300);
-  };
+    }, 3000);
+  }, []);
 
   const openModal = (field: "departure" | "arrival") => {
     setSelectedField(field);
@@ -98,7 +99,6 @@ const FormSearch = ({ onSearchSubmit }: FormSearchProps) => {
 
   const modalHeight = SIZES.height * 0.9;
   const listHeight = Math.max(modalHeight - 130 - keyboardHeight, 100);
-  const searchBarTheme = { colors: { primary: COLORS.secondary, text: COLORS.black } };
 
   useEffect(() => {
     if (snackbarVisible) {

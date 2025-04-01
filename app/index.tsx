@@ -117,7 +117,7 @@ const SplashScreen = () => {
     }));
 
     return (
-        <SafeAreaView style={{ flex: 1, backgroundColor: theme.colors.primaryContainer }}>
+        <SafeAreaView style={{ flex: 1, backgroundColor: COLORS.bgBlue }}>
             <View style={styles.container}>
                 <Animated.Text style={[styles.title, animatedText1Style, { color: COLORS.primary }]}>
                     Voie Rapide
@@ -125,7 +125,7 @@ const SplashScreen = () => {
                 
                 <Animated.View style={[styles.logoContainer, logoStyle]}>
                     <Image 
-                        source={require('../assets/images/logoVoieRapide.jpeg')} 
+                        source={require('../assets/images/logoVoieRapide.png')} 
                         style={styles.logo} 
                         resizeMode="contain"
                     />

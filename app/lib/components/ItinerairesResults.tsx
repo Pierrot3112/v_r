@@ -25,20 +25,23 @@ type ItinerairesResultsProps = {
 const formatDuration = (minutes: number): string => {
   const totalSeconds = Math.round(minutes * 60);
   const hours = Math.floor(totalSeconds / 3600);
-  const remainingMinutes = Math.floor((totalSeconds % 3600) / 60);
+  let remainingMinutes = Math.floor((totalSeconds % 3600) / 60);
   const remainingSeconds = totalSeconds % 60;
-
-  return [hours, remainingMinutes, remainingSeconds]
-    .map((val, index) => (val > 0 || index === 2 ? `${val}${['h', 'min', 's'][index]}` : ''))
+  if (remainingSeconds > 0) {
+    remainingMinutes += 1;
+  }
+  
+  return [hours, remainingMinutes]
+    .map((val, index) => (val > 0 ? `${val}${['h', 'min'][index]}` : ''))
     .filter(Boolean)
-    .join(' ') || '0s';
+    .join(' ') || '0min';
 };
 
 const ResultItem = memo(({ item, onPress }: { item: ItineraryItem; onPress: (id: string) => void }) => {
   return (
     <Card style={styles.item} onPress={() => onPress(item.itineraires_id)}>
       <Card.Content style={styles.itemContent}>
-        <View style={styles.iconContainer}>
+        <View style={[styles.iconContainer, {marginLeft: -20, marginRight: 30}]}>
           <IconButton icon="car" size={24} />
         </View>
         <View style={styles.textContainer}>
@@ -52,7 +55,9 @@ const ResultItem = memo(({ item, onPress }: { item: ItineraryItem; onPress: (id:
             Durée: {formatDuration(item.somme_duree_trajection)}
           </Text>
         </View>
-        <IconButton icon="chevron-right" size={24} />
+        < View style={styles.iconContainer}>
+          <IconButton icon="chevron-right" size={24} />
+        </View>
       </Card.Content>
     </Card>
   );
@@ -195,22 +200,21 @@ const styles = StyleSheet.create({
   itemContent: {
     flexDirection: 'row',
     alignItems: 'center',
-    padding: 8,
   },
   iconContainer: {
     flex: 1,
-    marginRight: 12,
   },
   textContainer: {
-    flex: 7,
+    flex: 10,
   },
   title: {
     color: COLORS.primary,
     fontWeight: 'bold',
     marginBottom: 4,
     backgroundColor: '#666',
-    padding: 5, 
+    paddingLeft: 5, 
     textAlign: 'left',
+    borderRadius: 5,
   },
   distance: {
     color: COLORS.gray || '#666',

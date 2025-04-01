@@ -1,38 +1,37 @@
 {
   "expo": {
-    "name": "Voie Rapide",
+    "name": "voie-rapide",
     "slug": "voie-rapide",
     "version": "1.0.0",
     "orientation": "portrait",
-    "icon": "./assets/images/icon.jpeg",
-    "scheme": "myapp",
-    "userInterfaceStyle": "automatic",
+    "icon": "./assets/icon.png",
+    "userInterfaceStyle": "light",
     "newArchEnabled": true,
+    "splash": {
+      "image": "./assets/images/splash-icon.png",
+      "resizeMode": "contain",
+      "backgroundColor": "#023047"
+    },
     "ios": {
-      "supportsTablet": true
+      "supportsTablet": true,
+      "bundleIdentifier": "com.midas.voie-rapide"
+    },
+    "android": {
+      "adaptiveIcon": {
+        "foregroundImage": "./assets/images/adaptive-icon.png",
+        "backgroundColor": "#023047"
+      },
+      "package": "com.midas.voierapide",
+      "buildType": "apk"
     },
     "web": {
-      "bundler": "metro",
-      "output": "single",
-      "favicon": "./assets/images/icon.jpeg"
-    },
-    "plugins": [
-      "expo-router"
-    ],
-    "experiments": {
-      "typedRoutes": true
+      "favicon": "./assets/images/favicon.png"
     },
     "extra": {
-      "router": {
-        "origin": false
-      },
       "eas": {
-        "projectId": "c0d3963f-f85d-4c85-be6d-ba5a7acf44af"
+        "projectId": "3ab1dfdb-c951-415d-869f-d48fc60e93aa"
       }
     },
-    "owner": "pierrot3112",
-    "android": {
-      "package": "com.midas.voierapide"
-    }
+    "owner": "pierrot3112"
   }
 }
