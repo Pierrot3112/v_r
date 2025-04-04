@@ -111,6 +111,15 @@ export default function Register() {
     }
   };
 
+const test = async () => {
+  router.push({
+    pathname: '/(auth)/validCodeSms',
+    params: { 
+      forceTimer: 'true' 
+    }
+  });
+}
+
   const handleChange = (name: keyof typeof formData, value: string) => {
     setFormData(prev => ({
       ...prev,
@@ -131,7 +140,8 @@ export default function Register() {
           value={formData.nom}
           onChangeText={(text) => handleChange('nom', text)}
           autoCapitalize="words"
-          textColor='#ffffff'
+          textColor={COLORS.primary}
+        theme={{ colors: { onSurfaceVariant: COLORS.gray2 } }}
         />
 
         <TextInput
@@ -142,7 +152,8 @@ export default function Register() {
           onChangeText={(text) => handleChange('num_tel', text)}
           keyboardType="phone-pad"
           placeholder="034 00 000 00"
-          textColor='#ffffff'
+          textColor={COLORS.primary}
+        theme={{ colors: { onSurfaceVariant: COLORS.gray2 } }}
         />
 
         <TextInput
@@ -152,12 +163,13 @@ export default function Register() {
           value={formData.password}
           onChangeText={(text) => handleChange('password', text)}
           secureTextEntry={secureText}
-          textColor='#ffffff'
+          textColor={COLORS.primary}
+        theme={{ colors: { onSurfaceVariant: COLORS.gray2 } }}
           right={
             <TextInput.Icon
-              icon={secureText ? 'eye-off' : 'eye'}
+              icon={secureText ? 'eye' : 'eye-off'}
               onPress={() => setSecureText(!secureText)}
-              color={'#ffffff'}
+              color={COLORS.gray2}
             />
           }
         />
@@ -169,12 +181,13 @@ export default function Register() {
           value={formData.confirmPassword}
           onChangeText={(text) => handleChange('confirmPassword', text)}
           secureTextEntry={secureTextConfirm}
-          textColor='#ffffff'
+          textColor={COLORS.primary}
+          theme={{ colors: { onSurfaceVariant: COLORS.gray2 } }}
           right={
             <TextInput.Icon
-              icon={secureTextConfirm ? 'eye-off' : 'eye'}
+              icon={secureTextConfirm ? 'eye' : 'eye-off'}
               onPress={() => setSecureTextConfirm(!secureTextConfirm)}
-              color={'#ffffff'}
+              color={COLORS.gray2}
             />
           }
         />
@@ -186,12 +199,13 @@ export default function Register() {
               setAcceptTerms(!acceptTerms);
               setShowCheckboxError(false);
             }}
-            color="#fb8500"
+            color={acceptTerms ? COLORS.gray : COLORS.gray2}
           />
+
           <Text style={styles.checkboxText}>
             J'accepte les{' '}
             <Text 
-              style={{ color: '#fb8500', textDecorationLine: 'underline' }}
+              style={{ color: COLORS.gray , textDecorationLine: 'underline' }}
               onPress={() => setModalVisible(true)}
             >
               termes et conditions
@@ -205,7 +219,7 @@ export default function Register() {
         <Button
           mode="contained"
           style={styles.button}
-          onPress={handleRegister}
+          onPress={test}
           loading={loading}
           disabled={loading}
           labelStyle={styles.buttonLabel}
@@ -314,7 +328,7 @@ const styles = StyleSheet.create({
   },
   checkboxText: {
     marginLeft: 8,
-    color: '#FFFFFF',
+    color: COLORS.primary,
   },
   errorText: {
     color: 'red',
@@ -365,7 +379,7 @@ const styles = StyleSheet.create({
     textAlign: 'center',
   },
   modalText: {
-    color: '#FFFFFF',
+    color: COLORS.primary,
     fontSize: 14,
     lineHeight: 20,
   },

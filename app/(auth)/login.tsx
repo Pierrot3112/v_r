@@ -3,6 +3,7 @@ import { View, StyleSheet } from 'react-native';
 import { TextInput, Button, Text, Snackbar } from 'react-native-paper';
 import { Link, router } from 'expo-router';
 import { useAuth } from '../lib/context/AuthContext';
+import { COLORS } from '../lib/constants';
 
 export default function Login() {
   const [num_tel, setNumTel] = useState('');
@@ -59,7 +60,7 @@ export default function Login() {
         keyboardType="phone-pad"
         placeholder="0340000000"
         textColor='#fff'
-        theme={{ colors: { onSurfaceVariant: '#fff' } }}
+        theme={{ colors: { onSurfaceVariant: COLORS.gray2 } }}
       />
 
       <TextInput
@@ -70,12 +71,12 @@ export default function Login() {
         onChangeText={setPassword}
         secureTextEntry={!showPassword}
         textColor='#fff'
-        theme={{ colors: { onSurfaceVariant: '#fff' } }}
+        theme={{ colors: { onSurfaceVariant: COLORS.gray2 } }}
         right={
           <TextInput.Icon
             icon={showPassword ? 'eye-off' : 'eye'}
             onPress={() => setShowPassword(!showPassword)}
-            color='#ffb703'
+            color={COLORS.gray2}
           />
         }
       />

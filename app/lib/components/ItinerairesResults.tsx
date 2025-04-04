@@ -89,7 +89,7 @@ const ItinerairesResults = ({
         }
         return response.data.filter((item) => item?.itineraires_id);
       } catch (error) {
-        showSnackbar('Erreur de chargement', 'error');
+        showSnackbar('Aucun itinéraire trouvé pour ces critères', 'error');
         throw error;
       }
     },

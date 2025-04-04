@@ -1,6 +1,6 @@
 import React, { useState, useEffect, useCallback, useRef } from "react";
 import { View, FlatList, TouchableOpacity, StyleSheet, Keyboard, KeyboardAvoidingView, Platform } from "react-native";
-import { Searchbar, Button, Text, Modal, Portal, Provider, RadioButton, Snackbar, TextInput } from "react-native-paper";
+import { Searchbar, Button, Text, Modal, Portal, Provider, RadioButton, Snackbar } from "react-native-paper";
 import pointsData from "../utils/points.json";
 import { COLORS, SIZES } from "../constants";
 
@@ -19,7 +19,7 @@ type FormSearchProps = {
 
 const FormSearch = ({ onSearchSubmit }: FormSearchProps) => {
   const [modalVisible, setModalVisible] = useState(false);
-  const [searchQuery, setSearchQuery] = useState("");
+  const [searchQuery, setSearchQuery] = useState(""); 
   const [filteredPoints, setFilteredPoints] = useState<Point[]>(pointsData);
   const [selectedField, setSelectedField] = useState<"departure" | "arrival" | null>(null);
   const [departure, setDeparture] = useState<Point | null>(null);
@@ -28,15 +28,14 @@ const FormSearch = ({ onSearchSubmit }: FormSearchProps) => {
   const [keyboardHeight, setKeyboardHeight] = useState(0);
   const [snackbarVisible, setSnackbarVisible] = useState(false);
   const [snackbarMessage, setSnackbarMessage] = useState("");
-  const [hiddenInputValue, setHiddenInputValue] = useState("");
 
   const timeoutRef = useRef<NodeJS.Timeout | null>(null);
 
   useEffect(() => {
-    const keyboardDidShowListener = Keyboard.addListener('keyboardDidShow', (e) => {
+    const keyboardDidShowListener = Keyboard.addListener("keyboardDidShow", (e) => {
       setKeyboardHeight(e.endCoordinates.height);
     });
-    const keyboardDidHideListener = Keyboard.addListener('keyboardDidHide', () => {
+    const keyboardDidHideListener = Keyboard.addListener("keyboardDidHide", () => {
       setKeyboardHeight(0);
     });
 
@@ -47,32 +46,29 @@ const FormSearch = ({ onSearchSubmit }: FormSearchProps) => {
     };
   }, []);
 
-  useEffect(() => {
-    setHiddenInputValue(searchQuery);
-  }, [searchQuery]);
-
-  const handleSearch = useCallback((query: string) => {
-    setSearchQuery(query);
-
+  const handleSearch = useCallback((text: string) => {
+    setSearchQuery(text);
     if (timeoutRef.current) {
       clearTimeout(timeoutRef.current);
     }
-
+    
     timeoutRef.current = setTimeout(() => {
-      const filtered = pointsData.filter(point => {
-        const searchText = query.toLowerCase();
-        return (
+      if (text.length >= 3) {
+        const searchText = text.toLowerCase();
+        const filtered = pointsData.filter(point =>
           point.nom.toLowerCase().includes(searchText) ||
           (point.location?.toLowerCase() || "").includes(searchText)
         );
-      });
-      setFilteredPoints(filtered);
-    }, 3000);
+        setFilteredPoints(filtered);
+      } else {
+        setFilteredPoints(pointsData);
+      }
+    }, 300);
   }, []);
 
   const openModal = (field: "departure" | "arrival") => {
     setSelectedField(field);
-    setSearchQuery("");
+    setSearchQuery(""); 
     setFilteredPoints(pointsData);
     setModalVisible(true);
   };
@@ -98,7 +94,7 @@ const FormSearch = ({ onSearchSubmit }: FormSearchProps) => {
   };
 
   const modalHeight = SIZES.height * 0.9;
-  const listHeight = Math.max(modalHeight - 130 - keyboardHeight, 100);
+  const listHeight = Math.max(modalHeight - 130, 100);
 
   useEffect(() => {
     if (snackbarVisible) {
@@ -115,19 +111,20 @@ const FormSearch = ({ onSearchSubmit }: FormSearchProps) => {
         <KeyboardAvoidingView
           behavior={Platform.OS === "ios" ? "padding" : "height"}
           style={{ flex: 1 }}
+          keyboardVerticalOffset={Platform.OS === "ios" ? 64 : 0}
         >
           <View style={styles.searchContainer}>
             <TouchableOpacity onPress={() => openModal("departure")} style={styles.inputWrapper}>
               <Text style={styles.label}>Point de départ</Text>
               <View style={styles.inputField}>
-                <Text style={styles.inputText}>{departure?.nom || 'Sélectionner...'}</Text>
+                <Text style={styles.inputText}>{departure?.nom || "Sélectionner..."}</Text>
               </View>
             </TouchableOpacity>
 
             <TouchableOpacity onPress={() => openModal("arrival")} style={styles.inputWrapper}>
               <Text style={styles.label}>Point d'arrivée</Text>
               <View style={styles.inputField}>
-                <Text style={styles.inputText}>{arrival?.nom || 'Sélectionner...'}</Text>
+                <Text style={styles.inputText}>{arrival?.nom || "Sélectionner..."}</Text>
               </View>
             </TouchableOpacity>
 
@@ -158,18 +155,19 @@ const FormSearch = ({ onSearchSubmit }: FormSearchProps) => {
               <View style={styles.modalContent}>
                 <View style={styles.searchBarContainer}>
                   <Searchbar
-                    value={searchQuery}
+                    onChangeText={handleSearch}
                     placeholder="Rechercher un point..."
                     style={styles.searchBar}
                     inputStyle={styles.searchInput}
-                    onChangeText={handleSearch}
-                    autoComplete="off" 
+                    autoComplete="off"
+                    autoCapitalize="none"
+                    autoCorrect={false}
                   />
                 </View>
 
                 <View style={[styles.pointsList, { height: listHeight }]}>
                   <FlatList
-                    data={searchQuery ? filteredPoints : pointsData}
+                    data={filteredPoints}
                     keyExtractor={item => item.id}
                     renderItem={({ item }) => (
                       <TouchableOpacity onPress={() => selectPoint(item)} style={styles.pointItem}>
@@ -183,18 +181,12 @@ const FormSearch = ({ onSearchSubmit }: FormSearchProps) => {
             </Modal>
           </Portal>
 
-          <TextInput
-            value={hiddenInputValue}
-            style={styles.hiddenInput}
-            editable={false}
-          />
-
           <Snackbar
             visible={snackbarVisible}
             onDismiss={() => setSnackbarVisible(false)}
             wrapperStyle={{ marginBottom: keyboardHeight }}
             action={{
-              label: 'OK',
+              label: "OK",
               onPress: () => setSnackbarVisible(false),
             }}
           >
@@ -223,7 +215,7 @@ const styles = StyleSheet.create({
   inputWrapper: { marginBottom: SIZES.large },
   label: { 
     fontSize: SIZES.medium, 
-    fontWeight: 'bold', 
+    fontWeight: "bold", 
     color: COLORS.secondary, 
     marginBottom: SIZES.xSmall 
   },
@@ -239,8 +231,8 @@ const styles = StyleSheet.create({
   },
   radioContainer: { marginVertical: SIZES.medium },
   radioOption: { 
-    flexDirection: 'row', 
-    alignItems: 'center', 
+    flexDirection: "row", 
+    alignItems: "center", 
     marginVertical: SIZES.small 
   },
   radioLabel: { 
@@ -257,12 +249,12 @@ const styles = StyleSheet.create({
   buttonLabel: { 
     color: COLORS.white, 
     fontSize: SIZES.medium, 
-    fontWeight: 'bold' 
+    fontWeight: "bold" 
   },
   modalContainer: { 
     backgroundColor: COLORS.bgBlue, 
     marginHorizontal: 0, 
-    overflow: 'hidden', 
+    overflow: "hidden", 
     paddingBottom: SIZES.medium * 1.5 
   },
   modalContent: { flex: 1 },
@@ -293,18 +285,13 @@ const styles = StyleSheet.create({
   pointName: { 
     fontSize: SIZES.medium / 1.25, 
     color: COLORS.primary, 
-    fontWeight: 'bold' 
+    fontWeight: "bold" 
   },
   pointLocation: { 
     fontSize: SIZES.small, 
     color: COLORS.secondary, 
     marginTop: SIZES.xSmall 
-  },
-  hiddenInput: { 
-    height: 0, 
-    width: 0, 
-    opacity: 0 
-  },
+  }
 });
 
 export default FormSearch;
