@@ -32,7 +32,6 @@ export const ApiErrorHandler =  ({ children }: ApiErrorHandlerProps)  => {
     setVisible(true);
   };
 
-  // On stocke la fonction dans GlobalUtils au lieu de globalThis
   GlobalUtils.showSnackbar = showError;
 
   return (
@@ -147,7 +146,6 @@ api.interceptors.response.use(
             navigationRef.navigate("/(auth)/login");
           }
         } catch (storageError) {
-          console.error("Failed to remove token:", storageError);
         }
         break;
       case 403:

@@ -179,12 +179,14 @@ const ForgotPassword = () => {
                   mode="contained"
                   onPress={handleSendCode}
                   disabled={!isValidPhone || loading}
-                  loading={loading}
                   style={styles.button}
-                  labelStyle={styles.buttonText}
-                  theme={{ colors: { primary: theme.colors.secondary } }}
+                  contentStyle={{ height: 48 }}
                 >
-                  Envoyer le code
+                  {loading ? (
+                    <ActivityIndicator color="white" />
+                  ) : (
+                    'Envoyer le code'
+                  )}
                 </Button>
               </>
             ) : (

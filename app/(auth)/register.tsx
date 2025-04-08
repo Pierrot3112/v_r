@@ -1,6 +1,6 @@
 import { useState } from 'react';
 import { View, StyleSheet, ScrollView, Modal, TouchableOpacity } from 'react-native';
-import { TextInput, Button, Text, Snackbar, Checkbox } from 'react-native-paper';
+import { TextInput, Button, Text, Snackbar, Checkbox, ActivityIndicator } from 'react-native-paper';
 import { useAuth } from '../lib/context/AuthContext';
 import { Link, useRouter } from 'expo-router';
 import ConditionModal from '../lib/components/ConditionModal';
@@ -24,6 +24,7 @@ export default function Register() {
   const [snackbarVisible, setSnackbarVisible] = useState(false);
   const [snackbarMessage, setSnackbarMessage] = useState('');
   const [snackbarType, setSnackbarType] = useState<'error' | 'success'>('error');
+  const [formErrors, setFormErrors] = useState<Record<string, string>>({});
 
   const { onRegister } = useAuth();
   const malagasyPhoneRegex = /^0(32|33|34|38|39)\d{7}$/;
@@ -111,14 +112,6 @@ export default function Register() {
     }
   };
 
-const test = async () => {
-  router.push({
-    pathname: '/(auth)/validCodeSms',
-    params: { 
-      forceTimer: 'true' 
-    }
-  });
-}
 
   const handleChange = (name: keyof typeof formData, value: string) => {
     setFormData(prev => ({
@@ -216,15 +209,18 @@ const test = async () => {
           <Text style={styles.errorText}>Vous devez accepter les conditions</Text>
         )}
 
-        <Button
+       <Button
           mode="contained"
           style={styles.button}
-          onPress={test}
-          loading={loading}
+          onPress={handleRegister}
           disabled={loading}
-          labelStyle={styles.buttonLabel}
+          contentStyle={{ height: 48 }}
         >
-          S'inscrire
+          {loading ? (
+            <ActivityIndicator color={COLORS.primary} />
+          ) : (
+            "S'inscrire"
+          )}
         </Button>
 
         <View style={styles.footer}>

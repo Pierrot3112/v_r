@@ -276,42 +276,17 @@ const ValidCodeOtp = () => {
         </View>
 
         <View style={styles.form}>
-          <View style={styles.otpContainer}>
-            {otp.map((value, index) => (
-              <TouchableOpacity
-                key={index}
-                onPress={handleOtpBoxPress}
-                onLongPress={handleLongPress}
-                style={[
-                  styles.otpBox, 
-                  value && styles.otpBoxFilled,
-                  focusedIndex === index && styles.otpBoxFocused
-                ]}
-              >
-                <Text style={styles.otpText}>{value || ''}</Text>
-                {focusedIndex === index && cursorVisible && (
-                  <View style={styles.cursor} />
-                )}
-              </TouchableOpacity>
-            ))}
-            <RNTextInput
-              ref={hiddenInputRef}
-              value={otp.join('')}
-              onChangeText={handleOtpChange}
-              maxLength={6}
-              keyboardType="number-pad"
-              style={styles.hiddenInput}
-              autoFocus
-              editable
-              contextMenuHidden={false}
-              autoCorrect={false}
-              onFocus={() => {
-                const activeIndex = otp.findIndex(digit => digit === '');
-                setFocusedIndex(activeIndex !== -1 ? activeIndex : otp.length - 1);
-              }}
-              onBlur={() => setFocusedIndex(null)}
+        <View style={styles.otpContainer}>
+          {Array(6).fill(0).map((_, index) => (
+            <OTPBox 
+              key={index}
+              index={index}
+              value={otp[index]}
+              focused={focusedIndex === index}
+              onPress={handleOtpBoxPress}
             />
-          </View>
+          ))}
+        </View>
 
           <Button
             mode="contained"

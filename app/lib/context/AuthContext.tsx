@@ -100,16 +100,16 @@ export const AuthProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
   
   
 
-  const onLogin = async (
-    num_tel: string, 
-    password: string
-  ): Promise<LoginResponse> => {
+  const onLogin = async (num_tel: string, password: string): Promise<LoginResponse> => {
     try {
-      const response = await api.post("/token", { 
-        num_tel, 
-        password 
-      });
+      const response = await api.post("/token", { num_tel, password });
+      
+      if (!response.data?.access_token) {
+        return { error: true, msg: "Réponse serveur invalide" };
+      }
+  
       await AsyncStorage.setItem(TOKEN_KEY, response.data.access_token);
+
       setAuthState({ 
         token: response.data.access_token, 
         authenticated: true 
@@ -120,7 +120,7 @@ export const AuthProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
         msg: "Connexion réussie", 
         token: response.data.access_token 
       };
-    } catch (error: unknown) {
+    } catch (error) {
       let errorMessage = "Numéro ou mot de passe incorrect";
       if (typeof error === 'object' && error !== null && 'response' in error) {
         const axiosError = error as { response?: { data?: { detail?: string } } };

@@ -7,13 +7,16 @@ import Animated, {
   withRepeat, 
   Easing,
   interpolate,
-  Extrapolate
+  Extrapolate,
+  withSequence,
+  withDelay,
 } from 'react-native-reanimated';
 import { 
   Text,
   ActivityIndicator,
   useTheme
 } from 'react-native-paper';
+import { useCallback } from 'react';
 import { router } from 'expo-router';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import api from './lib/config/AxiosConfig';
@@ -53,49 +56,45 @@ const SplashScreen = () => {
     };
 
     useEffect(() => {
-        text1Position.value = withTiming(0, { 
-            duration: 800, 
-            easing: Easing.out(Easing.exp) 
-        });
-        text2Position.value = withTiming(0, { 
-            duration: 800, 
-            easing: Easing.out(Easing.exp) 
-        });
-        
-        logoScale.value = withTiming(1, { 
-            duration: 1000, 
-            easing: Easing.elastic(1) 
-        });
-        logoOpacity.value = withTiming(1, { duration: 800 });
-
-        progress.value = withRepeat(
+        const animation = () => {
+          text1Position.value = withTiming(0, { duration: 800, easing: Easing.out(Easing.exp) });
+          text2Position.value = withTiming(0, { duration: 800, easing: Easing.out(Easing.exp) });
+          
+          logoScale.value = withSequence(
+            withTiming(1.2, { duration: 500 }),
+            withTiming(1, { duration: 500, easing: Easing.elastic(1) }
+          ));
+          
+          logoOpacity.value = withDelay(200, withTiming(1, { duration: 800 }));
+          
+          progress.value = withRepeat(
             withTiming(1, { duration: 2000, easing: Easing.linear }),
             -1,
             false
-        );
-
-        const authTimeout = setTimeout(() => {
+          );
+      
+          checkAuth().finally(() => {
             loaderOpacity.value = withTiming(1, { duration: 500 });
-            checkAuth();
-        }, 3000);
+          });
+        };
+      
+        animation();
+      }, []);
 
-        return () => clearTimeout(authTimeout);
-    }, []);
-
-    const checkAuth = async () => {
+      const checkAuth = useCallback(async () => {
         try {
-            const token = await checkToken();
-            if (!token) {
-                router.replace('/(auth)/login');
-                return;
-            }
-
-            const role = await getRole(token);
-            router.replace(role === 'client' ? '/(tabs)/home' : '/(auth)/login');
+          const token = await checkToken();
+          if (!token) {
+            await router.replace('/(auth)/login');
+            return;
+          }
+      
+          const role = await getRole(token);
+          await router.replace(role === 'client' ? '/(tabs)/home' : '/(auth)/login');
         } catch (error) {
-            router.replace('/(auth)/login');
+          await router.replace('/(auth)/login');
         }
-    };
+      }, []);
 
     const animatedText1Style = useAnimatedStyle(() => ({
         transform: [{ translateX: text1Position.value }],

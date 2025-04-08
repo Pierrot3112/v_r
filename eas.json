@@ -1,20 +1,9 @@
 {
   "cli": {
-    "version": ">= 16.0.1",
+    "version": ">= 3.14.0",
     "appVersionSource": "remote"
   },
   "build": {
-    "development": {
-      "developmentClient": true,
-      "distribution": "internal",
-      "android": {
-        "buildType": "apk",
-        "gradleCommand": ":app:assembleDebug"
-      },
-      "ios": {
-        "simulator": true
-      }
-    },
     "preview": {
       "distribution": "internal",
       "android": {
@@ -28,6 +17,9 @@
       "autoIncrement": true,
       "android": {
         "buildType": "app-bundle"
+      },
+      "ios": {
+        "simulator": false
       }
     }
   },

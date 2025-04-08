@@ -1,6 +1,6 @@
 import { useState } from 'react';
 import { View, StyleSheet } from 'react-native';
-import { TextInput, Button, Text, Snackbar } from 'react-native-paper';
+import { TextInput, Button, Text, Snackbar, ActivityIndicator } from 'react-native-paper';
 import { Link, router } from 'expo-router';
 import { useAuth } from '../lib/context/AuthContext';
 import { COLORS } from '../lib/constants';
@@ -83,13 +83,16 @@ export default function Login() {
 
       <Button
         mode="contained"
-        style={styles.button}
+        style={[styles.button, { justifyContent: 'center' }]}
         onPress={handleLogin}
-        loading={loading}
         disabled={loading}
-        labelStyle={styles.buttonLabel}
+        contentStyle={{ height: 48 }}
       >
-        Se connecter
+        {loading ? (
+          <ActivityIndicator color={COLORS.primary} />
+        ) : (
+          'Se connecter'
+        )}
       </Button>
 
       <View style={styles.links}>

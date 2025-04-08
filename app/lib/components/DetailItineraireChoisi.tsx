@@ -232,9 +232,9 @@ const RouteDetailScreen = ({ itineraryId, onBack }: RouteDetailScreenProps) => {
           <View key={`connection-${index}`} style={styles.routeSegmentCard}>
               <View style={styles.segmentHeader}>
                 <Ionicons name="location-sharp" size={28} color={theme.colors.primary} />
-                <Badge style={styles.locationBadge}>
-                  {connection.point_depart_nom}
-                </Badge>
+                <View style={styles.locationBadge}>
+                  <Text style={styles.locationText}>{connection.point_depart_nom}</Text>
+                </View>
               </View>
 
               <View
@@ -265,9 +265,9 @@ const RouteDetailScreen = ({ itineraryId, onBack }: RouteDetailScreenProps) => {
         <View style={styles.finalDestinationCard}>
           <View style={styles.segmentHeader}>
             <Ionicons name="location-sharp" size={24} color={theme.colors.primary} />
-            <Badge style={styles.locationBadge}>
-              {routeDetails?.arrivee_nom}
-            </Badge>
+            <View style={styles.locationBadge}>
+              <Text style={styles.locationText}>{routeDetails?.arrivee_nom}</Text>
+            </View>
           </View>
         </View>
       </ScrollView>
@@ -306,7 +306,6 @@ const styles = StyleSheet.create({
     paddingLeft: 50,
   },
   header: {
-    display: 'flex',
     flexDirection: 'row',
     alignItems: 'center',
   },
@@ -340,15 +339,19 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     alignItems: 'center',
     marginBottom: height * 0.005,
-    backgroundColor: 'transparent'
   },
   locationBadge: {
     marginLeft: width * 0.02,
+    paddingHorizontal: 10,
+    paddingVertical: 6,
+    borderRadius: 12,
+    maxWidth: width * 0.8,
+  },
+  locationText: {
     fontSize: width * 0.04,
-    backgroundColor: 'transparent',
+    color: 'white',
+    fontWeight: 'bold',
     flexWrap: 'wrap',
-    width: '80%', 
-    alignItems: 'flex-start',
   },
   segmentDetails: {
     marginLeft: width * 0.1,
@@ -362,10 +365,6 @@ const styles = StyleSheet.create({
     color: 'white',
     marginBottom: height * 0.005,
     fontWeight: 'bold',
-  },
-  divider: {
-    marginVertical: height * 0.015,
-    color: COLORS.green
   },
   errorText: {
     fontSize: width * 0.04,

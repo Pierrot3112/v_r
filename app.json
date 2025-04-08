@@ -39,6 +39,21 @@
         "projectId": "3ab1dfdb-c951-415d-869f-d48fc60e93aa"
       }
     },
-    "owner": "pierrot3112"
+    "owner": "pierrot3112",
+    "plugins": [
+      [
+        "expo-build-properties",
+        {
+          "Android": {
+            "compileSdkVersion": 35,
+            "targetSdkVersion": 35,
+            "buildToolsVersion": "35.0.0"
+          },
+          "ios": {
+            "deploymentTarget": "15.1"
+          }
+        }
+      ]
+    ]
   }
 }

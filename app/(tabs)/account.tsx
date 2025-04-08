@@ -66,7 +66,7 @@ const AccountClient = () => {
     try {
       setShowModal(true);
     } catch (err) {
-      console.log("Erreur lors de l'achat", err);
+      showSnackbar("Erreur lors de l'achat");
     } finally {
       setIsBuying(false);
     }
@@ -160,8 +160,8 @@ const AccountClient = () => {
             <View style={styles.modalView}>
               <Text style={styles.modalText}>
                 Voulez-vous confirmer l'achat de {creditOptions.find(option => option.id === selectedCreditId)?.name} 
-                pour le prix de {creditOptions.find(option => option.id === selectedCreditId)?.price} 
-                par {paymentOptions.find(option => option.id === selectedPaymentId)?.name} ?
+                 pour le prix de {creditOptions.find(option => option.id === selectedCreditId)?.price} 
+                 par {paymentOptions.find(option => option.id === selectedPaymentId)?.name} ?
               </Text>
               <View style={styles.modalButtons}>
                 <Pressable
