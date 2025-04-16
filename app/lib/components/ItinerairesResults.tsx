@@ -115,11 +115,6 @@ const ItinerairesResults = ({
     }
   }, [refetch]);
 
-  useEffect(() => {
-    if (isError) {
-      showSnackbar('Veuillez vérifier votre connexion', 'error');
-    }
-  }, [isError]);
 
   const handleItemPress = useCallback((id: string) => {
     onItemSelect(id);

@@ -2,10 +2,11 @@ import { Stack } from 'expo-router';
 import { StatusBar } from 'expo-status-bar';
 import { useFrameworkReady } from '@/hooks/useFrameworkReady';
 import { PaperProvider, MD3LightTheme } from 'react-native-paper';
-import { QueryClientProvider } from '@tanstack/react-query'; 
+import { QueryClientProvider } from '@tanstack/react-query';
 import { AuthProvider } from './lib/context/AuthContext';
+import { MenuProvider } from './lib/context/MenuContext';  
 import { COLORS } from './lib/constants';
-import { queryClient } from './lib/config/QueryClientConfig'; 
+import { queryClient } from './lib/config/QueryClientConfig';
 
 const theme = {
   ...MD3LightTheme,

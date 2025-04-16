@@ -5,7 +5,7 @@ import { useAuth } from '../lib/context/AuthContext';
 import { Link, useRouter } from 'expo-router';
 import ConditionModal from '../lib/components/ConditionModal';
 import AsyncStorage from '@react-native-async-storage/async-storage';
-import { COLORS } from '../lib/constants';
+import { COLORS, SIZES } from '../lib/constants';
 
 export default function Register() {
   const router = useRouter();
@@ -56,7 +56,7 @@ export default function Register() {
     const cleanedPhone = formData.num_tel.replace(/\s/g, '');
     
     if (!malagasyPhoneRegex.test(cleanedPhone)) {
-      showSnackbar('Numéro malgache invalide. Format: 034 00 000 00');
+      showSnackbar('Numéro invalide. Format: 034 00 000 00');
       return;
     }
   
@@ -66,7 +66,7 @@ export default function Register() {
     }
   
     if (formData.password !== formData.confirmPassword) {
-      showSnackbar('Les mots de passe ne correspondent pas');
+      showSnackbar('Les mots de passe ne correspondent pas');    
       return;
     }
   
@@ -88,6 +88,7 @@ export default function Register() {
   
       if (result.error) {
         showSnackbar(result.msg);
+        setLoading (false);
       } else {
         const cleanedPhone = formData.num_tel.replace(/\s/g, '') || "0340000000"; 
         
@@ -97,21 +98,25 @@ export default function Register() {
        
         setTimeout(() => {
           router.push({
-            pathname: '/(auth)/validCodeSms',
+            pathname: '/validCodeSms',
             params: { 
               phoneNumber: cleanedPhone,
               forceTimer: 'true' 
             }
           });
-        }, 1500);
+        }, 500);
       }
     } catch (error) {
-      showSnackbar("Erreur lors de la communication avec le serveur");
-    } finally {
+      let errorMessage = "Erreur lors de l'inscription";
+      setLoading(false);
+      if (error instanceof Error) {
+        errorMessage = error.message;
+        setLoading(false);
+      }
+      showSnackbar(errorMessage, 'error');
       setLoading(false);
     }
   };
-
 
   const handleChange = (name: keyof typeof formData, value: string) => {
     setFormData(prev => ({
@@ -157,7 +162,7 @@ export default function Register() {
           onChangeText={(text) => handleChange('password', text)}
           secureTextEntry={secureText}
           textColor={COLORS.primary}
-        theme={{ colors: { onSurfaceVariant: COLORS.gray2 } }}
+          theme={{ colors: { onSurfaceVariant: COLORS.gray2 } }}
           right={
             <TextInput.Icon
               icon={secureText ? 'eye' : 'eye-off'}
@@ -216,12 +221,16 @@ export default function Register() {
           disabled={loading}
           contentStyle={{ height: 48 }}
         >
+          S'inscrire
+        </Button>
+
+        <View style={{marginTop: 20}}>
           {loading ? (
             <ActivityIndicator color={COLORS.primary} />
           ) : (
-            "S'inscrire"
+            <Text> </Text>
           )}
-        </Button>
+        </View>
 
         <View style={styles.footer}>
           <Text style={styles.footerText}>Vous avez déjà un compte? </Text>
@@ -383,18 +392,18 @@ const styles = StyleSheet.create({
     maxHeight: '80%',
   },
   modal: {
-      height: '98%',
-      width: '98%',
-      alignSelf: 'center',
-      position: 'relative',
-      top: -2,
+    height: '100%',
+    width: '98%',
+    alignSelf: 'center',
+    position: 'relative',
+    top: 100,
   },
 
   headModal: {
       backgroundColor: COLORS.bgBlue,
       paddingHorizontal: 20,
       borderRadius: 10,
-      paddingTop: 50,
+      paddingTop: 2,
       paddingBottom: 20,
   },
 

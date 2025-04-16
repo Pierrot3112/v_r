@@ -9,6 +9,7 @@ import {
   Modal
 } from 'react-native';
 import { ActivityIndicator, Button, Text, Card, Snackbar } from 'react-native-paper';
+import { WebView } from 'react-native-webview';
 import api from "../lib/config/AxiosConfig";
 import styles from '../lib/styles/account.client.style';
 import { COLORS, SIZES } from '../lib/constants';
@@ -20,21 +21,22 @@ const AccountClient = () => {
   const [selectedCreditId, setSelectedCreditId] = useState<string | null>(null);
   const [selectedPaymentId, setSelectedPaymentId] = useState<number | null>(null);
   const [isBuying, setIsBuying] = useState(false);
-  const [isValidating, setIsValidating] = useState(false);
   const [snackbarVisible, setSnackbarVisible] = useState(false);
   const [snackbarMessage, setSnackbarMessage] = useState('');
   const [showModal, setShowModal] = useState(false);
+  const [showWebView, setShowWebView] = useState(false);
+  const [webviewUrl, setWebviewUrl] = useState('');
 
   const creditOptions = [
-    { id: "1", name: "5 Crédits", price: "5 000 Ariary" },
-    { id: "2", name: "12 Crédits", price: "10 000 Ariary" },
-    { id: "3", name: "30 Crédits", price: "25 000 Ariary" },
+    { id: "1", value: "5", label: "Crédits", price: "5 000 Ariary" },
+    { id: "2", value: "12", label: "Crédits", price: "10 000 Ariary" },
+    { id: "3", value: "30", label: "Crédits", price: "25 000 Ariary" }
   ];
 
   const paymentOptions = [
     { id: 1, image: require('../../assets/images/mvola.png'), name: "MVola" },
     { id: 2, image: require('../../assets/images/orangeMoney.png'), name: "Orange Money" },
-    { id: 3, image: require('../../assets/images/airtelMoney.png'), name: "Airtel Money" },
+    { id: 3, image: require('../../assets/images/airtelMoney.png'), name: "Airtel Money" }
   ];
 
   useEffect(() => {
@@ -56,35 +58,51 @@ const AccountClient = () => {
     setSnackbarVisible(true);
   };
 
-  const handleBuy = async () => {
+  const handleBuy = () => {
     if (!selectedCreditId || !selectedPaymentId) {
       showSnackbar("Veuillez sélectionner un crédit et un moyen de paiement");
       return;
     }
+    setShowModal(true);
+  };
 
+  const handleConfirmPurchase = async() => {
+    setShowModal(false);
+    setLoading(true);
     setIsBuying(true);
     try {
-      setShowModal(true);
+      const response = await api.post("/purchase", {
+        creditId: selectedCreditId,
+        paymentId: selectedPaymentId
+      });
+      if (response.status === 200) {
+        let simulatedUrl = "https://default-paiement.com";
+        setWebviewUrl(simulatedUrl);
+        setShowWebView(true);
+      } else {
+        showSnackbar("Erreur lors de l'achat.");
+      }
     } catch (err) {
-      showSnackbar("Erreur lors de l'achat");
+      let simulatedUrl = "https://www.google.com";
+      if (selectedPaymentId === 1) simulatedUrl = "https://www.mvola.mg";
+      else if (selectedPaymentId === 2) simulatedUrl = "https://www.orange.mg";
+      else if (selectedPaymentId === 3) simulatedUrl = "https://www.airtel.mg";
+      setWebviewUrl(simulatedUrl);
+      setShowWebView(true);
+      setLoading(false);
     } finally {
       setIsBuying(false);
     }
   };
 
-  const handleConfirmPurchase = () => {
-    setShowModal(false);
-    showSnackbar("Achat effectué avec succès !");
-  };
-
   const handleCancelPurchase = () => {
-    setShowModal(false); 
+    setShowModal(false);
     showSnackbar("Achat annulé");
   };
 
   if (loading) {
     return (
-      <View style={[styles.container, { backgroundColor: COLORS.bgBlue, height: SIZES.height, marginTop: 0 }]}>
+      <View style={[styles.container, { backgroundColor: COLORS.bgBlue, height: SIZES.height }]}>
         <ActivityIndicator size="large" color={COLORS.primary} />
       </View>
     );
@@ -92,6 +110,22 @@ const AccountClient = () => {
 
   if (error) {
     return <Text style={styles.error}>{error}</Text>;
+  }
+
+  if (showWebView) {
+    return (
+      <SafeAreaView style={{ flex: 1, backgroundColor: COLORS.bgBlue }}>
+        <WebView source={{ uri: webviewUrl }} style={{ flex: 1, backgroundColor: COLORS.bgBlue }} />
+        <Button
+          mode="contained"
+          onPress={() => setShowWebView(false)}
+          style={{ margin: 20 }}
+          labelStyle={{ color: COLORS.bgBlue }}
+        >
+          Quitter
+        </Button>
+      </SafeAreaView>
+    );
   }
 
   return (
@@ -111,8 +145,8 @@ const AccountClient = () => {
                   ]}
                 >
                   <Card.Content>
-                    <Text style={{ textAlign: 'center', color: '#fff', fontWeight: 'bold' }}>
-                      {option.name}
+                    <Text style={{ textAlign: 'center', color: '#fff', fontWeight: 'bold', fontSize: 15 }}>
+                      {option.value}{'\n'}{option.label}
                     </Text>
                   </Card.Content>
                 </Card>
@@ -121,7 +155,6 @@ const AccountClient = () => {
             <Text style={[styles.paymentTitle, { color: COLORS.primary }]}>
               {creditOptions.find(option => option.id === selectedCreditId)?.price || " "}
             </Text>
-
             <Text style={styles.paymentTitle}>Choix de paiement</Text>
             <View style={styles.container}>
               {paymentOptions.map((option) => (
@@ -137,7 +170,6 @@ const AccountClient = () => {
                 </Card>
               ))}
             </View>
-
             <Button
               mode="contained"
               onPress={handleBuy}
@@ -149,7 +181,6 @@ const AccountClient = () => {
             </Button>
           </View>
         </ScrollView>
-
         <Modal
           animationType="fade"
           transparent={true}
@@ -159,28 +190,19 @@ const AccountClient = () => {
           <View style={styles.centeredView}>
             <View style={styles.modalView}>
               <Text style={styles.modalText}>
-                Voulez-vous confirmer l'achat de {creditOptions.find(option => option.id === selectedCreditId)?.name} 
-                 pour le prix de {creditOptions.find(option => option.id === selectedCreditId)?.price} 
-                 par {paymentOptions.find(option => option.id === selectedPaymentId)?.name} ?
+                Voulez-vous confirmer l'achat de {creditOptions.find(option => option.id === selectedCreditId)?.value} {creditOptions.find(option => option.id === selectedCreditId)?.label} pour le prix de {creditOptions.find(option => option.id === selectedCreditId)?.price} par {paymentOptions.find(option => option.id === selectedPaymentId)?.name} ?
               </Text>
               <View style={styles.modalButtons}>
-                <Pressable
-                  style={[styles.button, styles.buttonCancel]}
-                  onPress={handleCancelPurchase}
-                >
+                <Pressable style={[styles.button, styles.buttonCancel]} onPress={handleCancelPurchase}>
                   <Text style={styles.textStyle}>Annuler</Text>
                 </Pressable>
-                <Pressable
-                  style={[styles.button, styles.buttonConfirm]}
-                  onPress={handleConfirmPurchase}
-                >
+                <Pressable style={[styles.button, styles.buttonConfirm]} onPress={handleConfirmPurchase}>
                   <Text style={styles.textStyle}>Confirmer</Text>
                 </Pressable>
               </View>
             </View>
           </View>
         </Modal>
-
         <Snackbar
           visible={snackbarVisible}
           onDismiss={() => setSnackbarVisible(false)}

@@ -1,15 +1,13 @@
-import React, { useState, useEffect, useRef, useCallback } from 'react';
+import React, { useState, useCallback, useEffect, useRef } from 'react';
 import {
   StyleSheet,
   View,
   KeyboardAvoidingView,
   Platform,
-  TextInput as RNTextInput,
-  TouchableOpacity,
-  Keyboard,
-  Clipboard,
-  Modal,
+  TextInput,
   Dimensions,
+  Keyboard,
+  ActivityIndicator,
 } from 'react-native';
 import {
   Button,
@@ -26,6 +24,7 @@ import { router } from 'expo-router';
 import { COLORS, SIZES } from '../lib/constants';
 
 const { height: SCREEN_HEIGHT } = Dimensions.get('window');
+const TOKEN_KEY = 'auth_token';
 
 type RootStackParamList = {
   ValidCodeOtp: {
@@ -34,25 +33,19 @@ type RootStackParamList = {
   };
 };
 
-const ValidCodeOtp = () => {
+const ValidCodeOtp: React.FC = () => {
   const theme = useTheme();
   const route = useRoute<RouteProp<RootStackParamList, 'ValidCodeOtp'>>();
   const { phoneNumber, forceTimer } = route.params;
-
-  const [otp, setOtp] = useState<string[]>(Array(6).fill(''));
+  const [otp, setOtp] = useState('');
   const [loading, setLoading] = useState(false);
   const [resendDisabled, setResendDisabled] = useState(true);
   const [timeLeft, setTimeLeft] = useState(300);
   const [snackbarVisible, setSnackbarVisible] = useState(false);
   const [snackbarMessage, setSnackbarMessage] = useState('');
   const [snackbarType, setSnackbarType] = useState<'error' | 'success'>('error');
-  const [showPasteModal, setShowPasteModal] = useState(false);
-  const [clipboardContent, setClipboardContent] = useState('');
-  const [focusedIndex, setFocusedIndex] = useState<number | null>(null);
-  const [cursorVisible, setCursorVisible] = useState(true);
 
-  const hiddenInputRef = useRef<RNTextInput>(null);
-  const timerRef = useRef<NodeJS.Timeout | null>(null);
+  const inputRef = useRef<TextInput>(null);
 
   const showSnackbar = useCallback((message: string, type: 'error' | 'success' = 'error') => {
     setSnackbarMessage(message);
@@ -64,18 +57,16 @@ const ValidCodeOtp = () => {
     try {
       if (forceTimer === 'true') {
         const now = Date.now();
-        await AsyncStorage.setItem('lastResendTime', now.toString());
+        await AsyncStorage.setItem(TOKEN_KEY, now.toString());
         setTimeLeft(300);
         setResendDisabled(true);
         return;
       }
-
-      const lastResendTime = await AsyncStorage.getItem('lastResendTime');
+      const lastResendTime = await AsyncStorage.getItem(TOKEN_KEY);
       if (lastResendTime) {
         const now = Date.now();
         const elapsed = now - parseInt(lastResendTime, 10);
         const remaining = Math.max(0, 300 - Math.floor(elapsed / 1000));
-
         if (remaining > 0) {
           setTimeLeft(remaining);
           setResendDisabled(true);
@@ -97,8 +88,9 @@ const ValidCodeOtp = () => {
   }, [initializeTimer]);
 
   useEffect(() => {
+    let timer: NodeJS.Timeout | null = null;
     if (timeLeft > 0 && resendDisabled) {
-      timerRef.current = setInterval(() => {
+      timer = setInterval(() => {
         setTimeLeft(prev => {
           if (prev <= 1) {
             setResendDisabled(false);
@@ -109,26 +101,21 @@ const ValidCodeOtp = () => {
       }, 1000);
     }
     return () => {
-      if (timerRef.current) {
-        clearInterval(timerRef.current);
-      }
+      if (timer) clearInterval(timer);
     };
   }, [timeLeft, resendDisabled]);
 
   const handleSubmitOtp = useCallback(async () => {
-    const otpCode = otp.join('');
-    if (otpCode.length !== 6) {
+    if (otp.length !== 6) {
       showSnackbar('Veuillez saisir les 6 chiffres du code', 'error');
       return;
     }
-
     setLoading(true);
     try {
       const response = await api.post('/verify', {
         num_tel: phoneNumber,
-        code: otpCode,
+        code: otp,
       });
-
       if (response.data) {
         showSnackbar('Votre compte a été validé!', 'success');
         setTimeout(() => {
@@ -136,10 +123,12 @@ const ValidCodeOtp = () => {
         }, 2000);
       } else {
         showSnackbar('Code invalide', 'error');
+        setLoading(false);
       }
     } catch (error: any) {
       const errorMessage = error.response?.data?.message ?? 'Erreur de validation';
       showSnackbar(errorMessage, 'error');
+      setLoading(false);
     } finally {
       setLoading(false);
     }
@@ -147,19 +136,19 @@ const ValidCodeOtp = () => {
 
   const handleResendOtp = useCallback(async () => {
     if (resendDisabled) return;
-
     setLoading(true);
     try {
       await api.post('/resend-code', { num_tel: phoneNumber });
-
       const now = Date.now();
-      await AsyncStorage.setItem('lastResendTime', now.toString());
+      await AsyncStorage.setItem(TOKEN_KEY, now.toString());
       setTimeLeft(300);
       setResendDisabled(true);
       showSnackbar('Code OTP renvoyé', 'success');
+      setLoading(false);
     } catch (error) {
       showSnackbar("Erreur lors de l'envoi du code", 'error');
       setResendDisabled(false);
+      setLoading(false);
     } finally {
       setLoading(false);
     }
@@ -170,90 +159,11 @@ const ValidCodeOtp = () => {
     const secs = seconds % 60;
     return `${mins}:${secs < 10 ? '0' : ''}${secs}`;
   };
-
-  const handleOtpChange = useCallback((text: string) => {
-    const filteredText = text.replace(/[^0-9]/g, '');
-    const digits = filteredText.split('').slice(0, 6);
-    const paddedDigits = [...digits, ...Array(6 - digits.length).fill('')];
-    setOtp(paddedDigits);
-    
-    const nextEmptyIndex = digits.length < 6 ? digits.length : 5;
-    setFocusedIndex(nextEmptyIndex);
-
-    if (digits.length === 6) {
-      hiddenInputRef.current?.blur();
-      Keyboard.dismiss();
-    }
+  
+  const handleChange = useCallback((text: string) => {
+    const filtered = text.replace(/[^0-9]/g, '').slice(0, 6);
+    setOtp(filtered);
   }, []);
-
-  useEffect(() => {
-    let cursorInterval: NodeJS.Timeout | null = null;
-    
-    if (focusedIndex !== null) {
-      cursorInterval = setInterval(() => {
-        setCursorVisible(prev => !prev);
-      }, 500);
-    }
-    
-    return () => {
-      if (cursorInterval) {
-        clearInterval(cursorInterval);
-      }
-      setCursorVisible(true);
-    };
-  }, [focusedIndex]);
-
-  const handleOtpBoxPress = useCallback(() => {
-    hiddenInputRef.current?.focus();
-    const activeIndex = otp.findIndex(digit => digit === '');
-    setFocusedIndex(activeIndex !== -1 ? activeIndex : otp.length - 1);
-  }, [otp]);
-
-  const handleLongPress = useCallback(async () => {
-    try {
-      const content = await Clipboard.getString();
-      setClipboardContent(content);
-      
-      if (content.replace(/[^0-9]/g, '').length >= 4) {
-        setShowPasteModal(true);
-      } else {
-        showSnackbar('Aucun copie de code trouvé', 'error');
-      }
-    } catch (error) {
-      showSnackbar('Erreur lors de la lecture du presse-papiers', 'error');
-    }
-  }, [showSnackbar]);
-
-  const handlePaste = useCallback(() => {
-    const otpCode = clipboardContent.replace(/[^0-9]/g, '').slice(0, 6);
-    if (otpCode.length >= 4) {
-      handleOtpChange(otpCode);
-    }
-    setShowPasteModal(false);
-  }, [clipboardContent, handleOtpChange, showSnackbar]);
-
-  const cancelPaste = useCallback(() => {
-    setShowPasteModal(false);
-  }, []);
-
-  useEffect(() => {
-    const handleKeyboardShow = () => {
-      const activeIndex = otp.findIndex(digit => digit === '');
-      setFocusedIndex(activeIndex !== -1 ? activeIndex : otp.length - 1);
-    };
-
-    const handleKeyboardHide = () => {
-      setFocusedIndex(null);
-    };
-
-    Keyboard.addListener('keyboardDidShow', handleKeyboardShow);
-    Keyboard.addListener('keyboardDidHide', handleKeyboardHide);
-
-    return () => {
-      Keyboard.removeAllListeners('keyboardDidShow');
-      Keyboard.removeAllListeners('keyboardDidHide');
-    };
-  }, [otp]);
 
   return (
     <KeyboardAvoidingView
@@ -276,24 +186,24 @@ const ValidCodeOtp = () => {
         </View>
 
         <View style={styles.form}>
-        <View style={styles.otpContainer}>
-          {Array(6).fill(0).map((_, index) => (
-            <OTPBox 
-              key={index}
-              index={index}
-              value={otp[index]}
-              focused={focusedIndex === index}
-              onPress={handleOtpBoxPress}
-            />
-          ))}
-        </View>
+          <TextInput
+            ref={inputRef}
+            style={styles.singleInput}
+            keyboardType="number-pad"
+            maxLength={6}
+            value={otp}
+            onChangeText={handleChange}
+            autoFocus
+          />
 
           <Button
             mode="contained"
             onPress={handleSubmitOtp}
-            style={styles.submitButton}
-            loading={loading}
-            disabled={loading}
+            style={[
+              styles.submitButton,
+              { backgroundColor: loading || otp.length !== 6 ? COLORS.gray2 : COLORS.gray }
+            ]}
+            disabled={loading || otp.length !== 6}
             labelStyle={styles.buttonLabel}
           >
             Valider
@@ -314,42 +224,17 @@ const ValidCodeOtp = () => {
             >
               {resendDisabled ? `Renvoyer après (${formatTime(timeLeft)})` : 'Renvoyer le code'}
             </Button>
-          </View>
-        </View>
-      </View>
 
-      <Modal
-        visible={showPasteModal}
-        transparent={true}
-        animationType="fade"
-        onRequestClose={cancelPaste}
-      >
-        <View style={styles.modalContainer}>
-          <View style={styles.modalContent}>
-            <Text style={styles.modalText}>Coller le code depuis le presse-papiers ?</Text>
-            <Text style={styles.clipboardText} numberOfLines={1}>
-              {clipboardContent}
-            </Text>
-            <View style={styles.modalButtons}>
-              <Button 
-                mode="contained" 
-                onPress={cancelPaste}
-                style={styles.modalButton}
-              >
-                Annuler
-              </Button>
-              <Button 
-                mode="contained" 
-                onPress={handlePaste}
-                style={styles.modalButton}
-                color={COLORS.primary}
-              >
-                Coller
-              </Button>
+            <View style={{marginTop: 20}}>
+              {loading ? (
+                <ActivityIndicator color={COLORS.primary} />
+              ) : (
+                <Text> </Text>
+              )}
             </View>
           </View>
         </View>
-      </Modal>
+      </View>
 
       <Snackbar
         visible={snackbarVisible}
@@ -406,53 +291,16 @@ const styles = StyleSheet.create({
   form: {
     width: '100%',
   },
-  otpContainer: {
-    flexDirection: 'row',
-    justifyContent: 'center',
-    marginBottom: 24,
-    marginHorizontal: 20,
-  },
-  otpBox: {
-    width: 48,
-    height: 48,
+  singleInput: {
+    height: 56,
     borderWidth: 1,
     borderRadius: 8,
     borderColor: COLORS.primary,
-    justifyContent: 'center',
-    alignItems: 'center',
-    marginHorizontal: 6,
-    position: 'relative',
-  },
-  otpBoxFilled: {
-    backgroundColor: 'transparent',
-  },
-  otpBoxFocused: {
-    borderColor: COLORS.yellow,
-    borderWidth: 2,
-  },
-  otpText: {
     fontSize: 20,
     fontWeight: 'bold',
     color: COLORS.primary,
-  },
-  cursor: {
-    position: 'absolute',
-    height: 24,
-    width: 2,
-    backgroundColor: COLORS.yellow,
-    marginLeft: 2,
-    bottom: 12,
-    opacity: 1,
-  },
-  hiddenInput: {
-    position: 'absolute',
-    top: 0,
-    left: 0,
-    width: '100%',
-    height: '100%',
-    color: 'transparent',
-    opacity: 0,
-    zIndex: 1
+    paddingHorizontal: 16,
+    marginBottom: 16,
   },
   submitButton: {
     marginVertical: 16,
@@ -463,9 +311,6 @@ const styles = StyleSheet.create({
     fontWeight: 'bold',
     color: COLORS.primary,
     fontSize: 18,
-  },
-  buttonContent: {
-    height: 48,
   },
   resendContainer: {
     flexDirection: 'column',
@@ -480,36 +325,25 @@ const styles = StyleSheet.create({
     padding: SIZES.medium / 4,
     borderRadius: SIZES.medium / 2,
   },
-  modalContainer: {
-    flex: 1,
+  otpDisplay: {
+    flexDirection: 'row',
+    justifyContent: 'center',
+    marginTop: 20,
+  },
+  otpBox: {
+    width: 40,
+    height: 40,
+    borderWidth: 1,
+    borderRadius: 4,
+    borderColor: COLORS.primary,
     justifyContent: 'center',
     alignItems: 'center',
-    backgroundColor: 'rgba(0,0,0,0.5)',
+    marginHorizontal: 4,
   },
-  modalContent: {
-    backgroundColor: 'white',
-    padding: 20,
-    borderRadius: 10,
-    width: '80%',
-  },
-  modalText: {
-    fontSize: 16,
-    marginBottom: 10,
-    textAlign: 'center',
-  },
-  clipboardText: {
-    fontSize: 22,
-    color: COLORS.gray,
-    marginBottom: 5,
-    textAlign: 'center',
-  },
-  modalButtons: {
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-  },
-  modalButton: {
-    flex: 1,
-    marginHorizontal: 5,
+  otpBoxText: {
+    fontSize: 18,
+    fontWeight: 'bold',
+    color: COLORS.primary,
   },
 });
 

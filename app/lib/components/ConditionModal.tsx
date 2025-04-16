@@ -1,31 +1,33 @@
 import React from 'react';
 import { ScrollView, View, Text, FlatList, StyleSheet } from 'react-native';
 import data from '../utils/data.json';
-import { COLORS } from '../constants';
+import { COLORS, SIZES } from '../constants';
 
 const ConditionModal = () => {
   const conditionData = data.conditions;
 
   return (
-    <ScrollView style={styles.modalContainer}>
+    <View style={styles.modalContainer}>
       <Text style={styles.titleCondition}>
         Conditions Générales d'Utilisation (CGU)
       </Text>
 
-      <FlatList
-        style={{ marginTop: 15 }}
-        data={conditionData}
-        keyExtractor={(item, index) => index.toString()}
-        scrollEnabled={false} // Désactive le scroll du FlatList car déjà dans un ScrollView
-        renderItem={({ item }) => (
-          <View style={styles.conditionItem}>
-            <Text style={styles.conditionTitle}>
-              {item.id}: {item.titre}
-            </Text>
-            <Text style={styles.conditionText}>{item.description}</Text>
-          </View>
-        )}
-      />
+      <ScrollView>
+        <FlatList
+          style={{ marginTop: 10 }}
+          data={conditionData}
+          keyExtractor={(item, index) => index.toString()}
+          scrollEnabled={false} 
+          renderItem={({ item }) => (
+            <View style={styles.conditionItem}>
+              <Text style={styles.conditionTitle}>
+                {item.id}: {item.titre}
+              </Text>
+              <Text style={styles.conditionText}>{item.description}</Text>
+            </View>
+          )}
+        />
+      </ScrollView>
 
       <View style={styles.footer}>
         <Text style={styles.footerText}>
@@ -34,13 +36,14 @@ const ConditionModal = () => {
         </Text>
         <Text style={styles.updateText}>Dernière mise à jour : Janvier 2025</Text>
       </View>
-    </ScrollView>
+    </View>
   );
 };
 
 const styles = StyleSheet.create({
   modalContainer: {
-    padding: 1,
+    height: SIZES.height - 150,
+    marginBottom: 20
   },
   titleCondition: {
     fontSize: 20,

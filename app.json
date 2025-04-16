@@ -6,30 +6,23 @@
     "orientation": "portrait",
     "icon": "./assets/icon.png",
     "userInterfaceStyle": "light",
+    "scheme": "Voie Rapide",
     "jsEngine": "hermes",
     "splash": {
-      "image": "./assets/images/splash-icon.png",
+      "image": "./assets/icon.png",
       "resizeMode": "contain",
       "backgroundColor": "#023047"
     },
     "ios": {
       "supportsTablet": true,
-      "bundleIdentifier": "com.midas.voie-rapide",
-      "jsEngine": "hermes"
+      "bundleIdentifier": "com.midas.voierapide"
     },
     "android": {
-      "enableProguardInReleaseBuilds": true,
-      "enableShrinkResourcesInReleaseBuilds": true,
-      "optimization": {
-        "size": "small",
-        "images": "small"
-      },
       "adaptiveIcon": {
         "foregroundImage": "./assets/images/adaptive-icon.png",
         "backgroundColor": "#023047"
       },
-      "package": "com.midas.voierapide",
-      "buildType": "apk"
+      "package": "com.midas.voierapide"
     },
     "web": {
       "favicon": "./assets/images/favicon.png"
@@ -40,20 +33,29 @@
       }
     },
     "owner": "pierrot3112",
-    "plugins": [
+   "plugins": [
       [
         "expo-build-properties",
         {
-          "Android": {
-            "compileSdkVersion": 35,
-            "targetSdkVersion": 35,
-            "buildToolsVersion": "35.0.0"
+          "android": {
+            "useLegacyPackaging": true,
+            "enableProguardInReleaseBuilds": true,
+            "enableShrinkResources": true
           },
           "ios": {
             "deploymentTarget": "15.1"
           }
         }
+      ],
+      [
+        "expo-splash-screen",
+        {
+          "backgroundColor": "#023047",
+          "image": "./assets/icon.png",
+          "imageWidth": 80
+        }
       ]
-    ]
+    ] ,
+    "newArchEnabled": true
   }
 }

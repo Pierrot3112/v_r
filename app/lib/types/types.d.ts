@@ -1,4 +1,6 @@
 import { LinkProps } from 'expo-router';
+import 'axios';
+
 
 declare module 'expo-router' {
   interface LinkProps {
@@ -21,5 +23,11 @@ declare global {
       '/(auth)/forgot-password': undefined;
       '/(auth)/ValidCodeSms': { phone?: string };
     }
+  }
+}
+
+declare module 'axios' {
+  export interface AxiosRequestConfig {
+    _handleError?: boolean;
   }
 }

@@ -8,19 +8,19 @@ import { View } from "react-native";
 import { useState } from "react";
 import { ReactNode } from "react";
 
+export const navigationRef = createNavigationContainerRef();
+
+export const BASE_API_URL = "https://api-v1-cec7.onrender.com/";
+
 interface ApiErrorHandlerProps {
   children: ReactNode;
 }
 
-
-export const GlobalUtils = {
+const GlobalUtils = {
   showSnackbar: (message: string, type: string = "error") => {},
 };
 
-export const BASE_API_URL = "https://api-v1-cec7.onrender.com/";
-export const navigationRef = createNavigationContainerRef();
-
-export const ApiErrorHandler =  ({ children }: ApiErrorHandlerProps)  => {
+const ApiErrorHandler = ({ children }: ApiErrorHandlerProps) => {
   const [visible, setVisible] = useState(false);
   const [snackbarData, setSnackbarData] = useState({
     message: "",
@@ -41,10 +41,7 @@ export const ApiErrorHandler =  ({ children }: ApiErrorHandlerProps)  => {
         visible={visible}
         onDismiss={() => setVisible(false)}
         duration={3000}
-        action={{
-          label: "OK",
-          onPress: () => setVisible(false),
-        }}
+        action={{ label: "OK", onPress: () => setVisible(false) }}
         style={{
           backgroundColor:
             snackbarData.type === "error" ? "#fe020287" : "#00050ca4",
@@ -67,14 +64,23 @@ const api = axios.create({
   timeout: 10000,
 });
 
+const AUTH_ENDPOINTS = ['/token', '/signup', '/forgot-password'];
+
+const isAuthEndpoint = (url: string = '') => {
+  return AUTH_ENDPOINTS.some(endpoint => url.includes(endpoint));
+};
+
 api.interceptors.request.use(
   async (config) => {
     const isConnected = await checkInternetConnection();
+
     if (!isConnected) {
-      GlobalUtils.showSnackbar(
-        "Pas de connexion Internet. Veuillez vérifier votre connexion.",
-        "error"
-      );
+      if (config._handleError !== false) {
+        GlobalUtils.showSnackbar(
+          "Pas de connexion Internet. Veuillez vérifier votre connexion.",
+          "error"
+        );
+      }
       return Promise.reject(new Error("Pas de connexion Internet"));
     }
 
@@ -82,22 +88,24 @@ api.interceptors.request.use(
       const token = await AsyncStorage.getItem(TOKEN_KEY);
       if (token) {
         config.headers.Authorization = `Bearer ${token}`;
-      } else if (navigationRef.isReady()) {
+      } else if (!isAuthEndpoint(config.url) && navigationRef.isReady()) {
         navigationRef.navigate("/(auth)/login");
       }
-      return config;
-    } catch (error) {
-      if (navigationRef.isReady()) {
+    } catch (err) {
+      if (!isAuthEndpoint(config.url) && navigationRef.isReady()) {
         navigationRef.navigate("/(auth)/login");
       }
-      return Promise.reject(error);
     }
+
+    return config;
   },
   (error) => {
-    GlobalUtils.showSnackbar(
-      "Une erreur est survenue lors de la préparation de la requête",
-      "error"
-    );
+    if (error.config?._handleError !== false) {
+      GlobalUtils.showSnackbar(
+        "Erreur lors de la préparation de la requête",
+        "error"
+      );
+    }
     return Promise.reject(error);
   }
 );
@@ -105,67 +113,74 @@ api.interceptors.request.use(
 api.interceptors.response.use(
   (response) => response,
   async (error) => {
-    if (error.code === "ECONNABORTED") {
-      GlobalUtils.showSnackbar(
-        "La requête a pris trop de temps. Veuillez réessayer.",
-        "error"
-      );
-      return Promise.reject(new Error("La requête a expiré"));
+    const { response, config } = error;
+    const isAuthRequest = isAuthEndpoint(config?.url);
+
+    if (config?._handleError === false) {
+      return Promise.reject(error);
     }
 
-    if (!error.response) {
-      GlobalUtils.showSnackbar(
-        "Erreur de connexion. Vérifiez votre connexion Internet.",
-        "error"
-      );
-      return Promise.reject(new Error("Problème de connexion"));
+    if (!response) {
+      const message = error.code === "ECONNABORTED" 
+        ? "La requête a expiré. Veuillez réessayer."
+        : "Erreur de connexion. Vérifiez votre Internet.";
+      
+      if (!isAuthRequest || config?._handleError === undefined) {
+        GlobalUtils.showSnackbar(message, "error");
+      }
+      return Promise.reject(new Error(message));
     }
 
-    const { status, data } = error.response;
-    let errorMessage = data?.message || data?.detail || "Une erreur est survenue";
+    const { status, data } = response;
+    let errorMessage = data?.detail || data?.message || "Une erreur est survenue";
 
-    switch (status) {
-      case 400:
-        GlobalUtils.showSnackbar(`Requête invalide: ${errorMessage}`, "error");
-        break;
-      case 401:
-        if (errorMessage.toLowerCase().includes("incorrect")) {
-          GlobalUtils.showSnackbar(
-            "Identifiants incorrects. Veuillez réessayer.",
-            "error"
-          );
-        } else {
-          GlobalUtils.showSnackbar(
-            "Session expirée. Veuillez vous reconnecter.",
-            "error"
-          );
+    if (isAuthRequest) {
+      switch (status) {
+        case 400:
+          errorMessage = data?.msg || "Requête invalide";
+          break;
+        case 401:
+          errorMessage = data?.detail?.includes("incorrect") 
+            ? "Identifiants incorrects. Veuillez réessayer."
+            : "Session expirée. Veuillez vous reconnecter.";
+          break;
+        case 403:
+          errorMessage = "Accès refusé. Permissions insuffisantes.";
+          break;
+        default:
+          errorMessage = "Erreur lors de l'authentification";
+      }
+    } else {
+      switch (status) {
+        case 400:
+          errorMessage = "Requête invalide";
+          break;
+        case 401:
+          errorMessage = "Session expirée. Veuillez vous reconnecter.";
+          break;
+        case 403:
+          errorMessage = "Accès refusé. Permissions insuffisantes.";
+          break;
+        case 404:
+          errorMessage = "Ressource introuvable";
+          break;
+        case 500:
+          errorMessage = "Erreur serveur. Veuillez réessayer plus tard.";
+          break;
+      }
+    }
+
+    if (!isAuthRequest || config?._handleError === undefined) {
+      GlobalUtils.showSnackbar(errorMessage, "error");
+    }
+
+    if (status === 401 && !isAuthRequest) {
+      try {
+        await AsyncStorage.removeItem(TOKEN_KEY);
+        if (navigationRef.isReady()) {
+          navigationRef.navigate("/(auth)/login");
         }
-        try {
-          await AsyncStorage.removeItem(TOKEN_KEY);
-          if (navigationRef.isReady()) {
-            navigationRef.navigate("/(auth)/login");
-          }
-        } catch (storageError) {
-        }
-        break;
-      case 403:
-        GlobalUtils.showSnackbar(
-          "Accès refusé. Permissions insuffisantes.",
-          "error"
-        );
-        break;
-      case 404:
-        GlobalUtils.showSnackbar("Ressource introuvable", "error");
-        break;
-      case 500:
-        GlobalUtils.showSnackbar(
-          "Erreur serveur. Veuillez réessayer plus tard.",
-          "error"
-        );
-        break;
-      default:
-        GlobalUtils.showSnackbar(`Erreur ${status}: ${errorMessage}`, "error");
-        break;
+      } catch {}
     }
 
     return Promise.reject(new Error(errorMessage));
@@ -173,3 +188,5 @@ api.interceptors.response.use(
 );
 
 export default api;
+
+export { ApiErrorHandler as ErrorHandler, GlobalUtils };

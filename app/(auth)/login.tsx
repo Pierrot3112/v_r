@@ -3,7 +3,7 @@ import { View, StyleSheet } from 'react-native';
 import { TextInput, Button, Text, Snackbar, ActivityIndicator } from 'react-native-paper';
 import { Link, router } from 'expo-router';
 import { useAuth } from '../lib/context/AuthContext';
-import { COLORS } from '../lib/constants';
+import { COLORS, SIZES } from '../lib/constants';
 
 export default function Login() {
   const [num_tel, setNumTel] = useState('');
@@ -13,7 +13,7 @@ export default function Login() {
   const [snackbarVisible, setSnackbarVisible] = useState(false);
   const [snackbarMessage, setSnackbarMessage] = useState('');
 
-  const { onLogin } = useAuth();
+  const { onLogin, getRole, onLogout } = useAuth();
 
   const showSnackbar = (message: string) => {
     setSnackbarMessage(message);
@@ -29,20 +29,38 @@ export default function Login() {
     setLoading(true);
     try {
       const result = await onLogin(num_tel.trim(), password.trim());
+      
       if (result.error) {
         showSnackbar(result.msg);
-      } else {
+        setLoading(false);
+        return;
+      }
+
+      const token = result.token;
+      if (!token) {
+        showSnackbar('Erreur lors de la connexion');
+        setLoading(false);
+        return;
+      }
+
+      const role = await getRole(token);
+      if (role === 'client') {
         router.replace('/(tabs)/home');
+      } else {
+        showSnackbar("Votre compte n'est pas un compte client");
+        await onLogout();
+        setLoading(false);
       }
     } catch (error) {
-      showSnackbar('Erreur de connexion');
+      showSnackbar('Une erreur inattendue est survenue');
+      setLoading(false);
     } finally {
       setLoading(false);
     }
-  };
+};
 
   const handleNumTelChange = (text: string) => {
-    const formattedText = text.replace(/[^0-9]/g, '').slice(0, 10); // Supprime tout sauf les chiffres et limite à 10 caractères
+    const formattedText = text.replace(/[^0-9]/g, '').slice(0, 10); 
     setNumTel(formattedText);
   };
 
@@ -84,15 +102,12 @@ export default function Login() {
       <Button
         mode="contained"
         style={[styles.button, { justifyContent: 'center' }]}
+        labelStyle={styles.buttonLabel}
         onPress={handleLogin}
         disabled={loading}
         contentStyle={{ height: 48 }}
       >
-        {loading ? (
-          <ActivityIndicator color={COLORS.primary} />
-        ) : (
-          'Se connecter'
-        )}
+        Se connecter
       </Button>
 
       <View style={styles.links}>
@@ -104,10 +119,18 @@ export default function Login() {
         </Link>
       </View>
 
+      <View style={{marginTop: 20}}>
+        {loading ? (
+          <ActivityIndicator color={COLORS.primary} />
+        ) : (
+          <Text> </Text>
+        )}
+      </View>
+
       <Snackbar
         visible={snackbarVisible}
         onDismiss={() => setSnackbarVisible(false)}
-        duration={3000}
+        duration={4000}
         style={styles.snackbar}
         action={{
           label: 'OK',
@@ -147,11 +170,12 @@ const styles = StyleSheet.create({
   },
   button: {
     marginTop: 8,
-    paddingVertical: 8,
+    paddingVertical: 2,
     backgroundColor: '#fb8500',
   },
   buttonLabel: {
-    color: '#fff',
+    color: COLORS.primary,
+    fontSize: 18,
   },
   links: {
     marginTop: 24,
@@ -165,8 +189,7 @@ const styles = StyleSheet.create({
   snackbar: {
     backgroundColor: '#015782a0',
     position: 'absolute',
-    bottom: 20,
-    left: 20,
-    right: 20,
+    bottom: 10,
+    width: SIZES.width - 20,
   },
 });

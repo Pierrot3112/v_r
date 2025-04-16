@@ -72,7 +72,7 @@ export const AuthProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
     password: string
   ): Promise<RegisterResponse> => {
     try {
-      const response = await api.post("/signup", { nom, num_tel, password });
+      const response = await api.post("/signup", { nom, num_tel, password }, { _handleError: false });
   
       if (response.data) {
         return { error: false, msg: "Inscription réussie!" };
@@ -84,9 +84,7 @@ export const AuthProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
       let errorMessage = "Le numéro que vous avez saisi est déjà inscrit, veuillez saisissez un autre.";
   
       if (error.response) {
-        if (error.response.status === 400) {
-          errorMessage = "Numéro déjà inscrit.";
-        } else if (error.response.status === 409) {
+        if (error.response.status === 400 || error.response.status === 409) {
           errorMessage = "Numéro déjà inscrit.";
         } else if (error.response.data && error.response.data.msg) {
           errorMessage = error.response.data.msg;
@@ -102,10 +100,13 @@ export const AuthProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
 
   const onLogin = async (num_tel: string, password: string): Promise<LoginResponse> => {
     try {
-      const response = await api.post("/token", { num_tel, password });
+      const response = await api.post("/token", { num_tel, password }, { _handleError: false });
       
       if (!response.data?.access_token) {
-        return { error: true, msg: "Réponse serveur invalide" };
+        return { 
+          error: true, 
+          msg: "Réponse serveur invalide" 
+        };
       }
   
       await AsyncStorage.setItem(TOKEN_KEY, response.data.access_token);
@@ -114,26 +115,35 @@ export const AuthProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
         token: response.data.access_token, 
         authenticated: true 
       });
+      
       api.defaults.headers.common['Authorization'] = `Bearer ${response.data.access_token}`;
+      
       return { 
         error: false, 
         msg: "Connexion réussie", 
         token: response.data.access_token 
       };
-    } catch (error) {
-      let errorMessage = "Numéro ou mot de passe incorrect";
-      if (typeof error === 'object' && error !== null && 'response' in error) {
-        const axiosError = error as { response?: { data?: { detail?: string } } };
-        if (axiosError.response?.data?.detail) {
-          errorMessage = axiosError.response.data.detail;
+    } catch (error: any) {
+      let errorMessage = "Erreur de connexion";
+      
+      if (error.response) {
+        errorMessage = error.response.data?.detail || 
+                      error.response.data?.message || 
+                      "Erreur de connexion";
+        
+        if (error.response.status === 401) {
+          errorMessage = "Identifiants incorrects. Veuillez réessayer.";
         }
+      } else if (error.message === "Pas de connexion Internet") {
+        errorMessage = "Pas de connexion Internet. Veuillez vérifier votre connexion.";
       }
+      
       return { 
         error: true, 
         msg: errorMessage 
       };
     }
-  };
+};
 
   const onLogout = async () => {
     await AsyncStorage.removeItem(TOKEN_KEY);

@@ -1,21 +1,21 @@
-import React, { useState } from 'react';
-import { 
-  SafeAreaView, 
-  View, 
-  Dimensions, 
-  KeyboardAvoidingView, 
-  Platform, 
-  ScrollView, 
-  StyleSheet 
+import React, { useState, useCallback } from 'react';
+import {
+  SafeAreaView,
+  View,
+  Dimensions,
+  KeyboardAvoidingView,
+  Platform,
+  ScrollView,
+  StyleSheet
 } from 'react-native';
-import { 
-  Text, 
-  ActivityIndicator, 
-  TextInput, 
-  Button, 
-  IconButton, 
-  useTheme, 
-  Snackbar 
+import {
+  Text,
+  ActivityIndicator,
+  TextInput,
+  Button,
+  IconButton,
+  useTheme,
+  Snackbar
 } from 'react-native-paper';
 import { useNavigation } from '@react-navigation/native';
 import api from '../lib/config/AxiosConfig';
@@ -53,21 +53,26 @@ const ForgotPassword = () => {
   const navigation = useNavigation();
   const theme = useTheme();
 
-  const togglePasswordVisibility = () => setSecureText(!secureText);
-  const hideSnackbar = () => setSnackbar({ ...snackbar, visible: false });
-
   const malagasyPhoneRegex = /^(?:\+261|0)(32|33|34|38|39)\d{7}$/;
 
-  const handlePhoneNumberChange = (text: string) => {
+  const togglePasswordVisibility = useCallback(() => {
+    setSecureText(prev => !prev);
+  }, []);
+
+  const hideSnackbar = useCallback(() => {
+    setSnackbar(prev => ({ ...prev, visible: false }));
+  }, []);
+
+  const showSnackbar = useCallback((message: string, type: 'success' | 'error') => {
+    setSnackbar({ visible: true, message, type });
+  }, []);
+
+  const handlePhoneNumberChange = useCallback((text: string) => {
     setNumTel(text);
     setIsValidPhone(malagasyPhoneRegex.test(text));
-  };
+  }, [malagasyPhoneRegex]);
 
-  const showSnackbar = (message: string, type: 'success' | 'error') => {
-    setSnackbar({ visible: true, message, type });
-  };
-
-  const handleSendCode = async () => {
+  const handleSendCode = useCallback(async () => {
     setLoading(true);
     try {
       const response = await api.post('/forgot-password', { num_tel });
@@ -75,25 +80,29 @@ const ForgotPassword = () => {
         showSnackbar('Code envoyé avec succès', 'success');
         setCodeSent(true);
       } else {
-        showSnackbar('Erreur lors de l\'envoi du code', 'error');
+        showSnackbar("Numéro invalid", 'error');
+        setLoading(false);
       }
     } catch (error: unknown) {
       let errorMessage = 'Une erreur est survenue';
-      if (typeof error === 'object' && error !== null) {
+      if (error && typeof error === 'object') {
         const axiosError = error as AxiosError<ErrorResponse>;
         if (axiosError.response?.data?.msg) {
           errorMessage = axiosError.response.data.msg;
         } else if (axiosError.message) {
           errorMessage = axiosError.message;
+          if (errorMessage === 'Erreur lors de l\'authentification') {
+            showSnackbar("Numéro invalid", 'error');
+          }
         }
       }
       showSnackbar(errorMessage, 'error');
     } finally {
       setLoading(false);
     }
-  };
+  }, [num_tel, showSnackbar]);
 
-  const handleResetPassword = async () => {
+  const handleResetPassword = useCallback(async () => {
     if (new_password !== confirmPassword) {
       showSnackbar('Les mots de passe ne correspondent pas', 'error');
       return;
@@ -102,7 +111,6 @@ const ForgotPassword = () => {
       showSnackbar('Le mot de passe doit contenir au moins 6 caractères', 'error');
       return;
     }
-
     setLoading(true);
     try {
       const response = await api.post('/reset-password', { num_tel, reset_code, new_password });
@@ -114,7 +122,7 @@ const ForgotPassword = () => {
       }
     } catch (error: unknown) {
       let errorMessage = 'Une erreur est survenue';
-      if (typeof error === 'object' && error !== null) {
+      if (error && typeof error === 'object') {
         const axiosError = error as AxiosError<ErrorResponse>;
         if (axiosError.response?.data?.msg) {
           errorMessage = axiosError.response.data.msg;
@@ -126,7 +134,7 @@ const ForgotPassword = () => {
     } finally {
       setLoading(false);
     }
-  };
+  }, [num_tel, reset_code, new_password, confirmPassword, navigation, showSnackbar]);
 
   return (
     <SafeAreaView style={[styles.container, { backgroundColor: theme.colors.background }]}>
@@ -143,18 +151,15 @@ const ForgotPassword = () => {
             style={styles.backButton}
             iconColor={theme.colors.primary}
           />
-
           <View style={styles.contentContainer}>
             <Text variant="headlineMedium" style={[styles.title, { color: theme.colors.primary }]}>
               Mot de passe oublié
             </Text>
-
             {!codeSent ? (
               <>
                 <Text variant="bodyLarge" style={[styles.label, { color: COLORS.primary }]}>
                   Veuillez saisir votre numéro de téléphone
                 </Text>
-
                 <TextInput
                   mode="outlined"
                   label="Numéro de téléphone"
@@ -174,27 +179,25 @@ const ForgotPassword = () => {
                     }
                   }}
                 />
-
                 <Button
                   mode="contained"
                   onPress={handleSendCode}
                   disabled={!isValidPhone || loading}
                   style={styles.button}
-                  contentStyle={{ height: 48 }}
+                  contentStyle={{ height: 40 }}
+                  labelStyle= {{color: COLORS.primary, fontSize: 16}}
                 >
-                  {loading ? (
-                    <ActivityIndicator color="white" />
-                  ) : (
-                    'Envoyer le code'
-                  )}
+                  Envoyer le code
                 </Button>
+                <View style={styles.loaderContainer}>
+                  {loading && <ActivityIndicator color={COLORS.primary} />}
+                </View>
               </>
             ) : (
               <>
                 <Text variant="bodyLarge" style={[styles.label, { color: COLORS.primary }]}>
                   Entrez le code de vérification et votre nouveau mot de passe
                 </Text>
-
                 <TextInput
                   mode="outlined"
                   label="Code de vérification"
@@ -206,23 +209,17 @@ const ForgotPassword = () => {
                   placeholderTextColor={COLORS.primary}
                   theme={{
                     colors: {
-                        primary: COLORS.primary,
-                        placeholder: COLORS.primary,
-                        text: COLORS.primary,
-                        onSurfaceVariant: COLORS.gray2
+                      primary: COLORS.primary,
+                      placeholder: COLORS.primary,
+                      text: COLORS.primary,
+                      onSurfaceVariant: COLORS.gray2
                     }
                   }}
                 />
-
-                {[{
-                  label: 'Nouveau mot de passe',
-                  value: new_password,
-                  onChange: setNewPassword
-                }, {
-                  label: 'Confirmer le mot de passe',
-                  value: confirmPassword,
-                  onChange: setConfirmPassword
-                }].map((item, index) => (
+                {[
+                  { label: 'Nouveau mot de passe', value: new_password, onChange: setNewPassword },
+                  { label: 'Confirmer le mot de passe', value: confirmPassword, onChange: setConfirmPassword }
+                ].map((item, index) => (
                   <TextInput
                     key={index}
                     mode="outlined"
@@ -250,32 +247,30 @@ const ForgotPassword = () => {
                     }}
                   />
                 ))}
-
                 <Button
                   mode="contained"
                   onPress={handleResetPassword}
                   disabled={loading}
-                  loading={loading}
                   style={styles.button}
                   labelStyle={styles.buttonText}
                   theme={{ colors: { primary: theme.colors.secondary } }}
                 >
                   Modifier le mot de passe
                 </Button>
+                <View style={styles.loaderContainer}>
+                  {loading && <ActivityIndicator color={COLORS.primary} />}
+                </View>
               </>
             )}
           </View>
         </ScrollView>
       </KeyboardAvoidingView>
-
       <Snackbar
         visible={snackbar.visible}
         onDismiss={hideSnackbar}
         duration={3000}
         style={{
-          backgroundColor: snackbar.type === 'success'
-            ? COLORS.green
-            : COLORS.red
+          backgroundColor: snackbar.type === 'success' ? COLORS.green : COLORS.red
         }}
       >
         <Text style={{ color: 'white' }}>{snackbar.message}</Text>
@@ -307,8 +302,7 @@ const styles = StyleSheet.create({
   },
   label: {
     textAlign: 'center',
-    marginBottom: height * 0.02,
-    color: COLORS.primary
+    marginBottom: height * 0.02
   },
   input: {
     marginBottom: height * 0.02,
@@ -324,6 +318,10 @@ const styles = StyleSheet.create({
     color: 'white',
     fontSize: 16,
     fontWeight: 'bold'
+  },
+  loaderContainer: {
+    marginTop: 20,
+    alignItems: 'center'
   }
 });
 

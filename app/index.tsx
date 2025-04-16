@@ -1,179 +1,144 @@
-import React, { useEffect } from 'react';
+import React, { useEffect, useCallback } from 'react';
 import { SafeAreaView, View, Image, StyleSheet } from 'react-native';
 import Animated, { 
   useSharedValue, 
   useAnimatedStyle, 
   withTiming, 
-  withRepeat, 
-  Easing,
-  interpolate,
-  Extrapolate,
-  withSequence,
   withDelay,
+  withRepeat,
+  interpolate,
+  interpolateColor,
+  Easing,
 } from 'react-native-reanimated';
-import { 
-  Text,
-  ActivityIndicator,
-  useTheme
-} from 'react-native-paper';
-import { useCallback } from 'react';
-import { router } from 'expo-router';
+import { useRoute, RouteProp } from '@react-navigation/native';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import api from './lib/config/AxiosConfig';
-import { COLORS } from './lib/constants';
+import { router } from 'expo-router';
+import { COLORS, SIZES } from './lib/constants';
 
 const TOKEN_KEY = "auth_token";
 
+type RootStackParamList = {
+  ValidCodeOtp: {
+    phoneNumber: string;
+  };
+};
+
 const SplashScreen = () => {
-    const theme = useTheme();
-    
-    const text1Position = useSharedValue(-200);
-    const text2Position = useSharedValue(200);
-    const logoScale = useSharedValue(0.5);
-    const logoOpacity = useSharedValue(0);
-    const loaderOpacity = useSharedValue(0);
-    const progress = useSharedValue(0);
+  useRoute<RouteProp<RootStackParamList, 'ValidCodeOtp'>>();
 
-    const checkToken = async (): Promise<string | null> => {
-        try {
-            return await AsyncStorage.getItem(TOKEN_KEY);
-        } catch {
-            return null;
-        }
-    };
+  const dot1 = useSharedValue(0);
+  const dot2 = useSharedValue(0);
+  const dot3 = useSharedValue(0);
+  const dot4 = useSharedValue(0);
+  const loaderOpacity = useSharedValue(0);
 
-    const getRole = async (token: string): Promise<string> => {
-        try {
-            const response = await api.get("/me", { 
-                headers: { 
-                    Authorization: `Bearer ${token}` 
-                } 
-            });
-            return response.data.role || "user";
-        } catch {
-            return "user";
-        }
-    };
+  const checkToken = async (): Promise<string | null> => {
+    try {
+      return await AsyncStorage.getItem(TOKEN_KEY);
+    } catch {
+      return null;
+    }
+  };
 
-    useEffect(() => {
-        const animation = () => {
-          text1Position.value = withTiming(0, { duration: 800, easing: Easing.out(Easing.exp) });
-          text2Position.value = withTiming(0, { duration: 800, easing: Easing.out(Easing.exp) });
-          
-          logoScale.value = withSequence(
-            withTiming(1.2, { duration: 500 }),
-            withTiming(1, { duration: 500, easing: Easing.elastic(1) }
-          ));
-          
-          logoOpacity.value = withDelay(200, withTiming(1, { duration: 800 }));
-          
-          progress.value = withRepeat(
-            withTiming(1, { duration: 2000, easing: Easing.linear }),
-            -1,
-            false
-          );
-      
-          checkAuth().finally(() => {
-            loaderOpacity.value = withTiming(1, { duration: 500 });
-          });
-        };
-      
-        animation();
-      }, []);
+  const getRole = async (token: string): Promise<string> => {
+    try {
+      const response = await api.get("/me", { 
+        headers: { Authorization: `Bearer ${token}` } 
+      });
+      return response.data.role || "user";
+    } catch {
+      return "user";
+    }
+  };
 
-      const checkAuth = useCallback(async () => {
-        try {
-          const token = await checkToken();
-          if (!token) {
-            await router.replace('/(auth)/login');
-            return;
-          }
-      
-          const role = await getRole(token);
-          await router.replace(role === 'client' ? '/(tabs)/home' : '/(auth)/login');
-        } catch (error) {
-          await router.replace('/(auth)/login');
-        }
-      }, []);
+  const checkAuth = useCallback(() => {
+    checkToken().then(async (token) => {
+      if (!token) {
+        router.replace('/(auth)/login');
+        return;
+      }
+      const role = await getRole(token);
+      router.replace(role === 'client' ? '/(tabs)/home' : '/(auth)/login');
+    }).catch(() => {
+      router.replace('/(auth)/login');
+    });
+  }, []);
 
-    const animatedText1Style = useAnimatedStyle(() => ({
-        transform: [{ translateX: text1Position.value }],
-        opacity: interpolate(text1Position.value, [-200, 0], [0, 1], Extrapolate.CLAMP)
-    }));
+  useEffect(() => {
+    dot1.value = withDelay(0, withRepeat(withTiming(1, { duration: 600, easing: Easing.inOut(Easing.ease) }), -1, true));
+    dot2.value = withDelay(150, withRepeat(withTiming(1, { duration: 600, easing: Easing.inOut(Easing.ease) }), -1, true));
+    dot3.value = withDelay(300, withRepeat(withTiming(1, { duration: 600, easing: Easing.inOut(Easing.ease) }), -1, true));
+    dot4.value = withDelay(450, withRepeat(withTiming(1, { duration: 600, easing: Easing.inOut(Easing.ease) }), -1, true));
+    loaderOpacity.value = withTiming(1, { duration: 500 });
 
-    const animatedText2Style = useAnimatedStyle(() => ({
-        transform: [{ translateX: text2Position.value }],
-        opacity: interpolate(text2Position.value, [200, 0], [0, 1], Extrapolate.CLAMP)
-    }));
+    const timer = setTimeout(() => {
+      checkAuth();
+    }, 5000);
 
-    const logoStyle = useAnimatedStyle(() => ({
-        transform: [{ scale: logoScale.value }],
-        opacity: logoOpacity.value
-    }));
+    return () => clearTimeout(timer);
+  }, [checkAuth]);
 
-    const loaderStyle = useAnimatedStyle(() => ({
-        opacity: loaderOpacity.value,
-    }));
+  const containerOpacityStyle = useAnimatedStyle(() => ({
+    opacity: loaderOpacity.value,
+  }));
 
-    return (
-        <SafeAreaView style={{ flex: 1, backgroundColor: COLORS.bgBlue }}>
-            <View style={styles.container}>
-                <Animated.Text style={[styles.title, animatedText1Style, { color: COLORS.primary }]}>
-                    Voie Rapide
-                </Animated.Text>
-                
-                <Animated.View style={[styles.logoContainer, logoStyle]}>
-                    <Image 
-                        source={require('../assets/images/logoVoieRapide.png')} 
-                        style={styles.logo} 
-                        resizeMode="contain"
-                    />
-                </Animated.View>
-                
-                <Animated.Text style={[styles.subtitle, animatedText2Style, { color: COLORS.primary }]}>
-                    Tongasoa !
-                </Animated.Text>
-                
-                <Animated.View style={[styles.loaderContainer, loaderStyle]}>
-                    <ActivityIndicator 
-                        animating={true} 
-                        size="large" 
-                        color={theme.colors.primary}
-                    />
-                </Animated.View>
-            </View>
-        </SafeAreaView>
-    );
+  const createDotStyle = (dotValue: Animated.SharedValue<number>) =>
+    useAnimatedStyle(() => {
+      const scale = interpolate(dotValue.value, [0, 1], [1, 1.5]);
+      const backgroundColor = interpolateColor(
+        dotValue.value,
+        [0, 1],
+        [COLORS.primary, COLORS.gray]
+      );
+      return {
+        transform: [{ scale }],
+        backgroundColor,
+      };
+    });
+
+  return (
+    <SafeAreaView style={{ flex: 1, backgroundColor: COLORS.bgBlue }}>
+      <View style={styles.container}>
+        <Image 
+          source={require('../assets/images/logoVoieRapide.png')} 
+          style={styles.logo} 
+          resizeMode="contain"
+        />
+        <Animated.View style={[styles.dotsContainer, containerOpacityStyle]}>
+          <Animated.View style={[styles.dot, createDotStyle(dot1)]} />
+          <Animated.View style={[styles.dot, createDotStyle(dot2)]} />
+          <Animated.View style={[styles.dot, createDotStyle(dot3)]} />
+          <Animated.View style={[styles.dot, createDotStyle(dot4)]} />
+        </Animated.View>
+      </View>
+    </SafeAreaView>
+  );
 };
 
 const styles = StyleSheet.create({
-    container: {
-        flex: 1,
-        justifyContent: 'center',
-        alignItems: 'center',
-        padding: 20,
-        backgroundColor: COLORS.bgBlue,
-    },
-    title: {
-        fontSize: 32,
-        fontWeight: 'bold',
-        marginBottom: 20,
-    },
-    subtitle: {
-        fontSize: 24,
-        fontWeight: '600',
-        marginTop: 20,
-    },
-    logoContainer: {
-        marginVertical: 30,
-    },
-    logo: {
-        width: 150,
-        height: 150,
-    },
-    loaderContainer: {
-        marginTop: 40,
-    },
+  container: {
+    flex: 1,
+    alignItems: 'center',
+    backgroundColor: COLORS.bgBlue,
+    padding: 20,
+  },
+  logo: {
+    marginTop: SIZES.height / 3.5,
+    width: 80,
+    height: 80,
+  },
+  dotsContainer: {
+    flexDirection: 'row',
+    marginTop: 20,
+  },
+  dot: {
+    width: 10,
+    height: 10,
+    borderRadius: 5,
+    backgroundColor: COLORS.primary,
+    marginHorizontal: 5,
+  },
 });
 
 export default SplashScreen;
